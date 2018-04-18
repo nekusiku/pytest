@@ -2,4 +2,5 @@
 import RPi.GPIO as GPIO
 import time
 import smbs
-import 
+import serial
+
