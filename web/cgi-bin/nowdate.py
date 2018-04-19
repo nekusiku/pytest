@@ -2,6 +2,7 @@
 # -*- coding:utf-8-*-
 import datetime
 import time
+#import threading
 #import Tkinter
 
 html_body="""
@@ -15,5 +16,8 @@ now=datetime.datetime.now()
 def clock():
     print "Content-type: text/html\n"
     print html_body % (now.year, now.month, now.day, now.hour, now.minute, now.second)
-clock().mainloop
+
+
+#timer = Threading.Timer(1,clock)
+#timer.mainloop
 #}
