@@ -9,8 +9,8 @@ from time import sleep
 GPIO.setmode(GPIO.BOARD)
 def read_BH1020():
     word_data = bus.read_word_data(address_BH1020,register_BH1020)
-    data = (word_data & 0xff00)>>8 | (word_data&0xff)<<8
-    data = data>>7
+    data = (word_data & 0xff00)>>10 | (word_data&0xff)<<10
+    data = data>>10
     if data & 0x1000 == 0:
         temperature = data*0.0625
     else: 
