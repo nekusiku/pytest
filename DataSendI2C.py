@@ -18,35 +18,46 @@ def request_reading():
     print(reading)
 
 while (reading!=0):
+    
     request_reading()
+    print("recieve-mode")
+
     command = input("Enter command: 1-Toggle LED, r-read A0:")
     
     if command =='s':
         print("stop")
+        break
     
     elif command == 'r':
-        #bus.write_byte(SLAVE_ADDRESS,ord('1'))
+        
         print("reading is full")
+        time.sleep(5)
+        
         GPIO.output(4,1)
-    
+        bus.write_byte(SLAVE_ADDRESS,ord('1'))
     elif command == 'end':
         GPIO.cleanup()
-        sys.exit()
+        break
     
     else:
         bus.write_byte(SLAVE_ADDRESS,ord('1'))
 
 while (reading==0):
+    
+    request_reading()
+    print("send_mode")
     command = input("Enter command: 1-Toggle LED, r-read A0:")
 
     if command == 's':
+        time.sleep(5)
         bus.write_byte(SLAVE_ADDRESS, ord('1'))
         print("send")
         GPIO.output(26,1)
     
     elif command == 'r':
+        request_reading()
         print("reading is none")
         
     elif command == 'end':
         GPIO.cleanup()
-        sys.exit()
+        break
