@@ -10,7 +10,7 @@ GPIO.setup(26,GPIO.OUT)
 
 GPIO.output(4,0)
 GPIO.output(26,0)
-SLAVE_ADDRESS = 0x0e
+SLAVE_ADDRESS = 0x04
 reading = int(bus.read_byte(SLAVE_ADDRESS))
 
 def request_reading():
@@ -31,4 +31,4 @@ while True:
         GPIO.output(4,0)
         GPIO.output(26,1)
         time.sleep(1)
-        print("replyed")
+        print("send")
