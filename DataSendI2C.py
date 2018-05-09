@@ -12,13 +12,18 @@ GPIO.output(4,0)
 GPIO.output(26,0)
 SLAVE_ADDRESS = 0x0e
 reading = int(bus.read_byte(SLAVE_ADDRESS))
-
+#sending = int(bus.write_byte(SLAVE_ADDRESS))
+#def send():
+#    bus.write_byte(SLAVE_ADDRESS('1'))
 def request_reading():
     reading = int(bus.read_byte(SLAVE_ADDRESS))
+    time.sleep(1)
+    print("reading,byte_is")
+    time.sleep(1)
     print(reading)
 
     
-while(reading!=0):
+while (reading!=0):
     
     request_reading()
     print("recieve-mode")
@@ -50,9 +55,10 @@ while(reading==0):
     request_reading()
     print("send_mode")
     command = input("Enter command: 1-Toggle LED, r-read A0:")
-    if command == 's':
+    if command == 's' :
         time.sleep(1)
-        bus.write_byte(SLAVE_ADDRESS, ord('1'))
+        #send() 
+        #bus.write_byte(SLAVE_ADDRESS, ord('1'))
         print("send")
         GPIO.output(26,1)
     elif command == 'r' and reading == 0:
