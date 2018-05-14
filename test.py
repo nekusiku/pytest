@@ -17,6 +17,7 @@ def request_reading():
     print(reading)
 
 while True:
+    GPIO.cleanup()
     command = input("Enter command: 1-Toggle LED, r-read A0:")
     if command == '1':
         bus.write_byte(SLAVE_ADDRESS, ord('1'))
@@ -24,4 +25,17 @@ while True:
     elif command == 'r':
         request_reading()
     elif command == 't':
-        request_reading();
+        bus.write_byte(SLAVE_ADDRESS, ord('t'))
+        #request_reading()
+        #bus.write_byte(SLAVE_ADDRESS,ord('t'))
+        print ("温度は"+str(bus.read_byte(SLAVE_ADDRESS))+"です")
+            
+        """elif (bus.write_byte(SLAVE_ADDRESS, ord('t'))==1):
+            request_reading()
+            if(request_reading()==1):
+                print(int(bus.read_byte(SLAVE_ADDRESS)))"""
+    elif command =='end':
+        bus.write_byte(SLAVE_ADDRESS, ord('e'))
+        GPIO.cleanup()
+        break;
+        
