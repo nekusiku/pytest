@@ -19,6 +19,10 @@ def request_reading():
     reading = int(bus.read_byte(SLAVE_ADDRESS))
     print(reading)
     
+def request_readingstr():
+    reading = str(bus.read_byte(SLAVE_ADDRESS))
+    print(reading)
+    
 reading = int(bus.read_byte(SLAVE_ADDRESS))>>10
 
 while True:
