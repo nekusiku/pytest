@@ -11,7 +11,7 @@ GPIO.output(4,0)
 GPIO.output(26,0)
 
 SLAVE_ADDRESS = 0x0e
-
+register_SLAVE = 0x0c
 def request_reading():
     reading = int(bus.read_byte(SLAVE_ADDRESS))
     print(reading)
@@ -28,12 +28,13 @@ while True:
         bus.write_byte(SLAVE_ADDRESS, ord('t'))
         #request_reading()
         #bus.write_byte(SLAVE_ADDRESS,ord('t'))
-        print ("温度は"+str(bus.read_byte(SLAVE_ADDRESS))+"です")
+        print ("温度は"+str(bus.read_byte(SLAVE_ADDRESS,ord('t')))+"です")
             
         """elif (bus.write_byte(SLAVE_ADDRESS, ord('t'))==1):
             request_reading()
             if(request_reading()==1):
-                print(int(bus.read_byte(SLAVE_ADDRESS)))"""
+                print(int(bus.read_byte(SLAVE_ADDRESS)))
+                long read_word_data(int addr,char cmd)"""
     elif command =='end':
         bus.write_byte(SLAVE_ADDRESS, ord('e'))
         GPIO.cleanup()
