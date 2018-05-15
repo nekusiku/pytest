@@ -5,6 +5,7 @@ import smbus
 import time
 import RPi.GPIO as GPIO
 import serial
+import sys
 bus = smbus.SMBus(1)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(4,GPIO.OUT)
@@ -16,15 +17,15 @@ SLAVE_ADDRESS = 0x0e
 register_SLAVE = 0x00
 
 def request_reading():
-    reading = int(bus.read_byte(SLAVE_ADDRESS))
+    reading = int(bus.read_byte_data(SLAVE_ADDRESS,register_SLAVE))
     print(reading)
     
 def request_readingstr():
-    reading_rg = str(bus.read_byte(SLAVE_ADDRESS)).encode('utf-8')
+    reading_rg = str(bus.read_byte_data(SLAVE_ADDRESS,register_SLAVE))
     print(reading_rg)
 
 def request_read_word():
-    reading_word = str(bus.read_word_data(SLAVE_ADDRESS,register_SLAVE)).encode('utf-8')
+    reading_word = str(bus.read_word_data(SLAVE_ADDRESS,register_SLAVE))
     print(reading_word)
 
 
@@ -49,8 +50,9 @@ while True:
         #bus.write_byte(SLAVE_ADDRESS,ord('t'))
         #print ("温度は"+str(bus.read_byte(SLAVE_ADDRESS,ord('t')))+"です")
         #print ("温度は"+reading<<10+"です")
-        if (bus.read_byte(SLAVE_ADDRESS)is not None):
-            print ("温度は"+str(bus.read_byte(SLAVE_ADDRESS)>>2)+"℃です")
+        if bus.read_byte_data(SLAVE_ADDRESS,register_SLAVE)!=0:
+            time.sleep(1)
+            print ("温度は"+str(bus.read_byte_data(SLAVE_ADDRESS,register_SLAVE)>>6)+"℃です")
 
         """elif (bus.write_byte(SLAVE_ADDRESS, ord('t'))==1):
             request_reading()
@@ -63,7 +65,7 @@ while True:
         break;
     elif command =="w":
         bus.write_byte(SLAVE_ADDRESS, ord('w'))
-        if bus.read_byte(SLAVE_ADDRESS)is not None:
+        if bus.read_byte(SLAVE_ADDRESS)!=0:
             request_read_word()
             request_readingstr()
     elif command =="b":
