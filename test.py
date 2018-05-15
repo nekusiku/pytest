@@ -20,27 +20,37 @@ def request_reading():
     print(reading)
     
 def request_readingstr():
-    reading = str(bus.read_byte(SLAVE_ADDRESS))
-    print(reading)
-    
-reading = int(bus.read_byte(SLAVE_ADDRESS))>>10
+    reading_rg = str(bus.read_byte(SLAVE_ADDRESS)).encode('utf-8')
+    print(reading_rg)
+
+def request_read_word():
+    reading_word = str(bus.read_word_data(SLAVE_ADDRESS,register_SLAVE)).encode('utf-8')
+    print(reading_word)
+
+
+
 
 while True:
     GPIO.cleanup()
     command = input("Enter command: 1-Toggle LED, r-read A0:")
+    reading = int(bus.read_byte(SLAVE_ADDRESS))
+    reading=None
     if command == '1':
         bus.write_byte(SLAVE_ADDRESS, ord('1'))
         GPIO.output(4,1)
     elif command == 'r':
+        bus.write_byte(SLAVE_ADDRESS, ord('r'))
         request_reading()
-        
+        request_read_word()
+        request_readingstr()
     elif command == 't':
         bus.write_byte(SLAVE_ADDRESS, ord('t'))
         #request_reading()
         #bus.write_byte(SLAVE_ADDRESS,ord('t'))
         #print ("温度は"+str(bus.read_byte(SLAVE_ADDRESS,ord('t')))+"です")
         #print ("温度は"+reading<<10+"です")
-        print ("温度は"+str(bus.read_byte(SLAVE_ADDRESS)>>2)+"です")
+        if (bus.read_byte(SLAVE_ADDRESS)is not None):
+            print ("温度は"+str(bus.read_byte(SLAVE_ADDRESS)>>2)+"℃です")
 
         """elif (bus.write_byte(SLAVE_ADDRESS, ord('t'))==1):
             request_reading()
@@ -51,4 +61,14 @@ while True:
         bus.write_byte(SLAVE_ADDRESS, ord('e'))
         GPIO.cleanup()
         break;
+    elif command =="w":
+        bus.write_byte(SLAVE_ADDRESS, ord('w'))
+        if bus.read_byte(SLAVE_ADDRESS)is not None:
+            request_read_word()
+            request_readingstr()
+    elif command =="b":
+        bus.write_byte(SLAVE_ADDRESS, ord('b'))
+        if bus.read_byte(SLAVE_ADDRESS)is not None:
+            request_read_word()
+            request_readingstr()
         
