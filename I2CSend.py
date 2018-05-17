@@ -11,6 +11,9 @@ bus = smbus.SMBus(1)
 SLAVE_ADDRESS = 0x0e
 register_SLAVE = 0x00
 #while True:
-bus.write_byte_data(SLAVE_ADDRESS,register_SLAVE,ord("t"))
+bus.write_byte_data(SLAVE_ADDRESS,register_SLAVE,ord('1'))
 time.sleep(1)
 print(bus.write_byte_data(SLAVE_ADDRESS,register_SLAVE,ord("t")))
+if(bus.read_byte_data(SLAVE_ADDRESS,register_SLAVE)!=0):
+        time.sleep(1)
+        print(bus.read_byte_data(SLAVE_ADDRESS,register_SLAVE))

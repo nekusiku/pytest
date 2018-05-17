@@ -51,7 +51,10 @@ while True:
         
         #bus.write_byte(SLAVE_ADDRESS,ord("1"))
         #bus.write_byte(SLAVE_ADDRESS,ord('t'))
-        bus.write_word_data(SLAVE_ADDRESS,register_SLAVE,ord('t'))
+        t = 0x14
+        bus.write_byte_data(SLAVE_ADDRESS,register_SLAVE,1)
+        bus.write_word_data(SLAVE_ADDRESS,register_SLAVE,0xFF)
+        bus.write_word_data(SLAVE_ADDRESS,register_SLAVE,0xFF)
         #bus.write_i2cblock_data(SLAVE_ADDRESS,ord(s[0]),ord(s[1:]))
         #request_reading()
         #bus.write_byte(SLAVE_ADDRESS,ord('t'))
@@ -61,7 +64,7 @@ while True:
             time.sleep(1)
             print ("温度は"+str(bus.read_byte_data(SLAVE_ADDRESS,register_SLAVE))+"℃です")
             print ("温度は"+str(bus.read_byte(SLAVE_ADDRESS))+"℃です")
-            print ("温度は"+str(bus.read_word_data(SLAVE_ADDRESS,register_SLAVE))+"℃です")
+            print ("温度は"+str(bus.read_word_data(SLAVE_ADDRESS,register_SLAVE)>>8)+"℃です")
             #print (str(bus.write_word_data(SLAVE_ADDRESS,register_SLAVE,ord('t'))))
         """elif (bus.write_byte(SLAVE_ADDRESS, ord('t'))==1):
             request_reading()
