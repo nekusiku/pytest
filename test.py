@@ -51,8 +51,8 @@ while True:
         
         #bus.write_byte(SLAVE_ADDRESS,ord("1"))
         #bus.write_byte(SLAVE_ADDRESS,ord('t'))
-        t = 0x14
-        bus.write_byte_data(SLAVE_ADDRESS,register_SLAVE,1)
+        #t = 0x14
+        bus.write_byte_data(SLAVE_ADDRESS,register_SLAVE,0x13)
         bus.write_word_data(SLAVE_ADDRESS,register_SLAVE,0xFF)
         bus.write_word_data(SLAVE_ADDRESS,register_SLAVE,0xFF)
         #bus.write_i2cblock_data(SLAVE_ADDRESS,ord(s[0]),ord(s[1:]))
