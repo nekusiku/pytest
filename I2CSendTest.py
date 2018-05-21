@@ -35,9 +35,14 @@ def R_Read():
     time.sleep(1)
     #指定されたバイト数のデータを読み取る、この読み取り部分
 """
-for num in range (1,10):
+
+bus.write_i2c_block_data(0x0e,register_SLAVE,[0x17,0x20,0x5A])
+time.sleep(1)
+    #for num in range (0,10):
     #bus.write_i2c_block_data(SLAVE_ADDRESS,)
-    print(bus.read_i2c_block_data(SLAVE_ADDRESS,register_SLAVE,1))
-    
-    #R_Read()
+for num in range(0,10):
+    if(bus.read_i2c_block_data(SLAVE_ADDRESS,register_SLAVE,1)!=0):
+        print(bus.read_i2c_block_data(SLAVE_ADDRESS,register_SLAVE,1))
+        time.sleep(1)
+    R_Read()
         
