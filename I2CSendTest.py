@@ -9,8 +9,8 @@ import sys
 
 bus = smbus.SMBus(1)#i2Cの設定
 SLAVE_ADDRESS = 0x0e#マイコンのi2Cアドレス、ここは絶対に変えない。
-register_SLAVE = 16#温度センサにつなげるアドレス
-
+register_read = 0x1c#読み込み用アドレス
+register_write= 0x1d#書き込み用アドレス
 
 def R_Read():
     reading=int(bus.read_byte(SLAVE_ADDRESS))#指定されたアドレスのデータを１バイト読み取る
@@ -36,13 +36,17 @@ def R_Read():
     #指定されたバイト数のデータを読み取る、この読み取り部分
 """
 
-bus.write_i2c_block_data(0x0e,register_SLAVE,[0x17,0x20,0x5A])
+bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13,0xff,0xff])
+bus.write_byte(SLAVE_ADDRESS,1)
 time.sleep(1)
     #for num in range (0,10):
     #bus.write_i2c_block_data(SLAVE_ADDRESS,)
 for num in range(0,10):
-    if(bus.read_i2c_block_data(SLAVE_ADDRESS,register_SLAVE,1)!=0):
-        print(bus.read_i2c_block_data(SLAVE_ADDRESS,register_SLAVE,1))
+    if(bus.read_i2c_block_data(SLAVE_ADDRESS,register_read,2)!=0):
+        bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13,0xff,0xff])
+        print(bus.read_i2c_block_data(SLAVE_ADDRESS,register_read,2))
+        print(bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13,0xff,0xff]))
         time.sleep(1)
-    R_Read()
+    #R_Read()
         
+
