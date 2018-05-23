@@ -35,18 +35,20 @@ def R_Read():
     time.sleep(1)
     #指定されたバイト数のデータを読み取る、この読み取り部分
 """
-
-bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13,0xff,0xff])
-bus.write_byte(SLAVE_ADDRESS,1)
-time.sleep(1)
+while True:
+    a = [0x13,0xff,0xff]
+    bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,a)
+    #bus.write_byte(SLAVE_ADDRESS,1)
+    time.sleep(1)
     #for num in range (0,10):
     #bus.write_i2c_block_data(SLAVE_ADDRESS,)
-for num in range(0,10):
-    if(bus.read_i2c_block_data(SLAVE_ADDRESS,register_read,2)!=0):
-        bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13,0xff,0xff])
-        print(bus.read_i2c_block_data(SLAVE_ADDRESS,register_read,2))
-        print(bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13,0xff,0xff]))
-        time.sleep(1)
-    #R_Read()
+    #for num in range(0,10):
+    if(bus.read_i2c_block_data(SLAVE_ADDRESS,register_read,3)!=0):
+        #bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13,0xff,0xff])
+        print(bus.read_i2c_block_data(0x0e,0x1c,4))
+        print(bus.read_byte(SLAVE_ADDRESS))
+        #print(bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13,0xff,0xff]))
+        #time.sleep(1)
+        #R_Read()
         
 
