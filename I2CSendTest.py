@@ -9,8 +9,8 @@ import sys
 
 bus = smbus.SMBus(1)#i2Cの設定
 SLAVE_ADDRESS = 0x0e#マイコンのi2Cアドレス、ここは絶対に変えない。
-register_read = 0x1c#読み込み用アドレス
-register_write= 0x1d#書き込み用アドレス
+register_read = 0x1c#読み込み用アドレス(マイコンの書き込み)
+register_write= 0x1d#書き込み用アドレス(マイコンの読み込み)
 
 def R_Read():
     reading=int(bus.read_byte(SLAVE_ADDRESS))#指定されたアドレスのデータを１バイト読み取る
@@ -37,18 +37,18 @@ def R_Read():
 """
 while True:
     a = [0x13,0xff,0xff]
-    bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,a)
+    bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13,0xff,0xff])
     #bus.write_byte(SLAVE_ADDRESS,1)
     time.sleep(1)
     #for num in range (0,10):
     #bus.write_i2c_block_data(SLAVE_ADDRESS,)
     #for num in range(0,10):
-    if(bus.read_i2c_block_data(SLAVE_ADDRESS,register_read,3)!=0):
-        #bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13,0xff,0xff])
-        print(bus.read_i2c_block_data(0x0e,0x1c,4))
+    if(bus.read_i2c_block_data(SLAVE_ADDRESS,register_read,10)!=0):
+        bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13,0xff,0xff])
+        print(bus.read_i2c_block_data(0x0e,register_read,10))
         print(bus.read_byte(SLAVE_ADDRESS))
-        #print(bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13,0xff,0xff]))
-        #time.sleep(1)
-        #R_Read()
+        print(bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13,0xff,0xff]))
+        time.sleep(1)
+    #    R_Read()
         
 
