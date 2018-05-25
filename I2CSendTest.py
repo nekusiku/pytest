@@ -17,20 +17,39 @@ def R_Read():
     print(reading)
 
 #read = int(bus.read_i2c_block_data(SLAVE_ADDRESS,register_SLAVE,10))
-"""while True:
+while True:
 
     command = input("Enter command: ad-pushAD, re-request, ping-ping,b12-bc:")#コマンド入力
     if command == 'ad':#AD変換
-        bus.write_i2c_block_data(0x0e,0x17,[0x20,0x5A])
+        bus.write_i2c_block_data(0x0e,register_write,[0x17])
         time.sleep(1)
         print("ad")
-    とりあえず石川さんのコマンドをそのまま
+        R_Read()
+        bus.write_i2c_block_data(0x0e,register_write,[0x20])
+        time.sleep(1)
+        R_Read()
+        bus.write_i2c_block_data(0x0e,register_write,[0x5A])
+        time.sleep(1)
+        R_Read()
+    #とりあえず石川さんのコマンドをそのまま
     elif command == 're':
-        bus.write_i2c_block_data(0x0e,0x13,[0xFF,0xFF])
+        bus.write_i2c_block_data(0x0e,register_write,[0x13])
+        print(bus.read_i2c_block_data(0x0e,register_read,5))
+        R_Read()
+        time.sleep(1)
+        bus.write_i2c_block_data(0x0e,register_write,[0xff])
+        time.sleep(1)
+        R_Read()
+        bus.write_i2c_block_data(0x0e,register_write,[0xff])
+        time.sleep(1)
+        R_Read()
+        
     elif command == 'ping':
-        bus.write_i2c_block_data(0x0e,0x17,[0x10,0x5A])
+        bus.write_i2c_block_data(0x0e,register_write,[0x17,0x10,0x5A])
+        R_Read()
     elif command == 'b12':
-        bus.write_i2c_block_data(0x0e,0x17,[0x30,0x5A])
+        bus.write_i2c_block_data(0x0e,register_write,[0x17,0x30,0x5A])
+        R_Read()
         
     time.sleep(1)
     #指定されたバイト数のデータを読み取る、この読み取り部分
@@ -46,9 +65,10 @@ while True:
     if(bus.read_i2c_block_data(SLAVE_ADDRESS,register_read,10)!=0):
         bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13,0xff,0xff])
         print(bus.read_i2c_block_data(0x0e,register_read,10))
+        
         print(bus.read_byte(SLAVE_ADDRESS))
         print(bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13,0xff,0xff]))
-        time.sleep(1)
-    #    R_Read()
         
-
+        R_Read()
+        time.sleep(2)
+"""
