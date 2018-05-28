@@ -16,39 +16,64 @@ def R_Read():
     reading=int(bus.read_byte(SLAVE_ADDRESS))#指定されたアドレスのデータを１バイト読み取る
     print(reading)
 
+def D_Read():
+    d_read=str(bus.read_byte(SLAVE_ADDRESS).decode())
+    print(d_read)
 #read = int(bus.read_i2c_block_data(SLAVE_ADDRESS,register_SLAVE,10))
 while True:
+    
 
     command = input("Enter command: ad-pushAD, re-request, ping-ping,b12-bc:")#コマンド入力
     if command == 'ad':#AD変換
-        bus.write_i2c_block_data(0x0e,register_write,[0x17])
-        time.sleep(1)
         print("ad")
-        R_Read()
-        bus.write_i2c_block_data(0x0e,register_write,[0x20])
+        print(0x14)
+        #bus.write_i2c_block_data(0x0e,register_write,[0x14,0x20,0x5A])
+        bus.write_i2c_block_data(0x0e,register_write,[0x14])
         time.sleep(1)
         R_Read()
-        bus.write_i2c_block_data(0x0e,register_write,[0x5A])
+        #bus.write_i2c_block_data(0x0e,register_write,[0x20])
+        print(0x20)
+        time.sleep(1)
+        R_Read()
+        #bus.write_i2c_block_data(0x0e,register_write,[0x5A])
+        print(0x5a)
         time.sleep(1)
         R_Read()
     #とりあえず石川さんのコマンドをそのまま
+    #リクエス
     elif command == 're':
-        bus.write_i2c_block_data(0x0e,register_write,[0x13])
-        print(bus.read_i2c_block_data(0x0e,register_read,5))
+        #bus.write_i2c_block_data(0x0e,register_write,ord('a'))
+        bus.write_word_data(SLAVE_ADDRESS,register_write,ord('a'))
+        print(len(u"a".encode("UTF-8")))
+        print(0x13)
         R_Read()
         time.sleep(1)
-        bus.write_i2c_block_data(0x0e,register_write,[0xff])
+        #bus.write_i2c_block_data(0x0e,register_write,[0xff])
         time.sleep(1)
+        print(0xff)
         R_Read()
-        bus.write_i2c_block_data(0x0e,register_write,[0xff])
+        #bus.write_i2c_block_data(0x0e,register_write,[0xff])
         time.sleep(1)
+        print(0xff)
         R_Read()
-        
+        print(bus.read_i2c_block_data(0x0e,register_read,1))
+        print(bus.read_byte_data(0x0e,1))
     elif command == 'ping':
-        bus.write_i2c_block_data(0x0e,register_write,[0x17,0x10,0x5A])
+        bus.write_i2c_block_data(0x0e,register_write,[0x15,0x10,0x5A])
+        time.sleep(1)
+        R_Read()
+        #bus.write_i2c_block_data(0x0e,register_write,[0x10])
+        time.sleep(1)
+        R_Read()
+        #bus.write_i2c_block_data(0x0e,register_write,[0x5A])
+        time.sleep(1)
         R_Read()
     elif command == 'b12':
         bus.write_i2c_block_data(0x0e,register_write,[0x17,0x30,0x5A])
+        R_Read()
+    elif command == 'test':
+        bus.write_i2c_block_data(0x0e,register_write,[0x18])
+        print(0x18)
         R_Read()
         
     time.sleep(1)
