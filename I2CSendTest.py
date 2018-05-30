@@ -17,7 +17,7 @@ def R_Read():
     #print(reading)
     read = int(bus.read_byte(SLAVE_ADDRESS))
     print(read)
-    print(bus.read_i2c_block_data(0x0e,register_read,1))
+    print(bus.read_i2c_block_data(0x0e,register_read))
     print(bus.read_byte_data(0x0e,1))
     
 def D_Read():
@@ -25,42 +25,47 @@ def D_Read():
     print(d_read)
 #read = int(bus.read_i2c_block_data(SLAVE_ADDRESS,register_SLAVE,10))
 while True:
-    
+    bus.write_i2c_block_data(0x0e,register_write,[0x00])
 
     command = input("Enter command: ad-pushAD, re-request, ping-ping,b12-bc:")#コマンド入力
     if command == 'ad':#AD変換
         print("ad")
-        print(0x14)
-        #bus.write_i2c_block_data(0x0e,register_write,[0x14,0x20,0x5A])
-        bus.write_i2c_block_data(0x0e,register_write,[0x14])
+        print("0x14=20を送る")
+        bus.write_word_data(0x0e,register_write,[0x14,0x20,0x5A])
+##        bus.write_word_data(SLAVE_ADDRESS,register_write,ord("1"))
+        #bus.write_i2c_block_data(0x0e,register_write,[0x14])
         time.sleep(1)
         R_Read()
+        print("0x20=32を送る")
         #bus.write_i2c_block_data(0x0e,register_write,[0x20])
         #print(0x20)
+        #bus.write_i2c_block_data(0x0e,register_write,[0x00])
         time.sleep(1)
         R_Read()
+        print("0x5a=90を送る")
         #bus.write_i2c_block_data(0x0e,register_write,[0x5A])
         #print(0x5a)
+        #bus.write_i2c_block_data(0x0e,register_write,[0x00])
         time.sleep(1)
         R_Read()
-        
+        print("念の為、もう一回読み込む")
         time.sleep(1)
         R_Read()
     #とりあえず石川さんのコマンドをそのまま
     #リクエス
     elif command == 're':
         #bus.write_i2c_block_data(0x0e,register_write,ord('a'))
-        #bus.write_word_data(SLAVE_ADDRESS,register_write,ord("a"))
+        bus.write_word_data(SLAVE_ADDRESS,register_write,ord("r"))
         bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x12])
         #print(len(u"a".encode("UTF-8")))
         #print(0x13)
         R_Read()
         time.sleep(1)
-        #bus.write_i2c_block_data(0x0e,register_write,[0xff])
+        bus.write_i2c_block_data(0x0e,register_write,[0xff])
         time.sleep(1)
         #print(0xff)
         R_Read()
-        #bus.write_i2c_block_data(0x0e,register_write,[0xff])
+        bus.write_i2c_block_data(0x0e,register_write,[0xff])
         time.sleep(1)
         #print(0xff)
         R_Read()
