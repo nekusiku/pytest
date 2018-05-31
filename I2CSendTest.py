@@ -20,7 +20,7 @@ def R_Read():
     print(bus.read_i2c_block_data(0x0e,register_read,7))
     print(bus.read_byte_data(SLAVE_ADDRESS,register_read))
     print(bus.read_word_data(SLAVE_ADDRESS,register_read))
-    print(bus.read_block_data(SLAVE_ADDRESS,register_read))
+    #print(bus.read_block_data(SLAVE_ADDRESS,register_read))ここをいじるとクラッシュが発生するためいじらないこと。
 def D_Read():
     d_read=str(bus.read_byte(SLAVE_ADDRESS).decode())
     print(d_read)
@@ -53,6 +53,7 @@ while True:
         time.sleep(1)
         R_Read()
         print("念の為、もう一回読み込む")
+        bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[ord('5')])
         time.sleep(1)
         R_Read()
     #とりあえず石川さんのコマンドをそのまま
