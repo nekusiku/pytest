@@ -26,51 +26,55 @@ def D_Read():
     print(d_read)
 #read = int(bus.read_i2c_block_data(SLAVE_ADDRESS,register_SLAVE,10))
 while True:
+    #bus.write_i2c_block_data(0x0e,0x1d,ord("1"))
+    
     bus.write_i2c_block_data(0x0e,register_write,[0x00,0x00,0x00,0x00,0x00,0x00])
+    #bus.write_byte_data(SLAVE_ADDRESS,register_write,ord("1"))
+    
 
     command = input("Enter command: ad-pushAD, re-request, ping-ping,b12-bc:")#コマンド入力
     if command == 'ad':#AD変換
         print("ad")
         print("0x14=20を送る")
         #bus.write_i2c_block_data(0x0e,register_write,[0x14,0x20,0x5A])
-##        bus.write_word_data(SLAVE_ADDRESS,register_write,ord("1"))
+        #bus.write_word_data(SLAVE_ADDRESS,register_write,ord("1"))
         bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x01,0x02,0x03])
         #bus.write_word_data(0x0e,register_write,0x14)
         #bus.write_block_data(0x0,register_write,0x14)
-        
+        #bus.write_i2c_block_data(0x0e,register_write,[0x17])
         time.sleep(1)
         R_Read()
         print("0x20=32を送る")
         #bus.write_i2c_block_data(0x0e,register_write,[0x02])
         #print(0x20)
-        #bus.write_i2c_block_data(0x0e,register_write,[0x00])
+        #bus.write_i2c_block_data(0x0e,register_write,[0x20])
         time.sleep(1)
         R_Read()
         print("0x5a=90を送る")
         #bus.write_i2c_block_data(0x0e,register_write,[0x03])
         #print(0x5a)
-        #bus.write_i2c_block_data(0x0e,register_write,[0x00])
+        #bus.write_i2c_block_data(0x0e,register_write,[0x5a])
         time.sleep(1)
         R_Read()
         print("念の為、もう一回読み込む")
-        bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[ord('5')])
+        #bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[ord("5")])
         time.sleep(1)
         R_Read()
-    #とりあえず石川さんのコマンドをそのまま
-    #リクエス
+     #とりあえず石川さんのコマンドをそのまま
+     #リクエス
     elif command == 're':
         #bus.write_i2c_block_data(0x0e,register_write,ord('a'))
         #bus.write_word_data(SLAVE_ADDRESS,register_write,ord("r"))
-        #bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x12])
+        bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13])
         #print(len(u"a".encode("UTF-8")))
         #print(0x13)
         R_Read()
         time.sleep(1)
-        #bus.write_i2c_block_data(0x0e,register_write,[0xff])
+        bus.write_i2c_block_data(0x0e,register_write,[0xff])
         time.sleep(1)
         #print(0xff)
         R_Read()
-        #bus.write_i2c_block_data(0x0e,register_write,[0xff])
+        bus.write_i2c_block_data(0x0e,register_write,[0xff])
         time.sleep(1)
         #print(0xff)
         R_Read()
@@ -95,7 +99,8 @@ while True:
         time.sleep(1)
         R_Read()
     elif command =='send':
-        bus.write_i2c_block_data(0x0e,register_write,[0x18])
+        #bus.write_i2c_block_data(0x0e,register_write,[0x18])
+        bus.write_i2c_block_data(0x0e,register_write,[0x17,0x20,0x5A])
         R_Read()
     time.sleep(1)
     #指定されたバイト数のデータを読み取る、この読み取り部分
