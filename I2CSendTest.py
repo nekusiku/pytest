@@ -35,7 +35,7 @@ while True:
     #bus.write_i2c_block_data(0x0e,0x1d,ord("1"))
     #print("初期化")
     #R_Read()
-    bus.write_i2c_block_data(0x0e,register_write,[0x13])
+    #bus.write_i2c_block_data(0x0e,register_write,[0x13])
     #print(bus.read_i2c_block_data(0x0e,0x01,7))
     #R_Read()
     #bus.write_byte_data(SLAVE_ADDRESS,register_write,ord("1"))
@@ -67,7 +67,7 @@ while True:
         time.sleep(1)
         R_Read()
     elif command == 'test':
-        bus.write_i2c_block_data(0x0e,register_write,[0x00,0x00,0x00,0x00,0x00,0x00])
+        #bus.write_i2c_block_data(0x0e,register_write,[0x00,0x00,0x00,0x00,0x00,0x00])
         bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13])
         print("sended")
         #R_Read()
