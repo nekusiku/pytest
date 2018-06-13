@@ -17,6 +17,7 @@ def R_Read():
     #print(reading)
     read = int(bus.read_byte(SLAVE_ADDRESS))
     print(read)
+    print("i2c")
     print(bus.read_i2c_block_data(SLAVE_ADDRESS,register_write))
     print(bus.read_i2c_block_data(SLAVE_ADDRESS,register_read))
     print("byte")
@@ -64,13 +65,12 @@ while True:
         bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x11,0x18,0x16])
         time.sleep(1)
         R_Read()
-        time.sleep(1)
-        R_Read()
     elif command == 'test':
         #bus.write_i2c_block_data(0x0e,register_write,[0x00,0x00,0x00,0x00,0x00,0x00])
-        bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13])
+        #bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13,0x14,0x15])
+        bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x10])
         print("sended")
-        #R_Read()
+        R_Read()
         #bus.write_i2c_block_data(0x0e,register_write,[0x13,0x14,0x15])
         #print('Test')
         
@@ -81,13 +81,17 @@ while True:
         #time.sleep(1)
         #R_Read()
         print("end")
-    elif command =='repeat':
-        bus.write_block_data(0x0e,register_write,[0x00,0x00,0x00,0x00,0x00,0x00])
+    elif command =='read':
+        #bus.write_block_data(0x0e,register_write,[0x00,0x00,0x00,0x00,0x00,0x00])
         R_Read()
         time.sleep(1)
-        R_Read()
-        time.sleep(1)
-        R_Read()
+        #time.sleep(1)
+        #R_Read()
+    elif command =='erase':
+        bus.write_i2c_block_data(0x0e,register_write,[0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00])
+        bus.write_i2c_block_data(0x0e,register_read,[0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00])
+
+        print("erased")
     time.sleep(1)
     #指定されたバイト数のデータを読み取る、この読み取り部分
 """
