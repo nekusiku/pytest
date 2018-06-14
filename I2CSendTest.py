@@ -15,6 +15,7 @@ register_write= 0x1c#書き込み用アドレス
 def R_Read():
     #reading=int(bus.read_byte_data(SLAVE_ADDRESS,register_read))#指定されたアドレスのデータを１バイト読み取る
     #print(reading)
+    print("address_byte")
     read = int(bus.read_byte(SLAVE_ADDRESS))
     print(read)
     print("i2c")
@@ -48,13 +49,12 @@ while True:
         R_Read()
         print("ad")
         print("0x14=20を送る")
-        #bus.write_i2c_block_data(0x0e,register_write,[0x17,0x12,0x19])
+        bus.write_i2c_block_data(0x0e,register_write,[0x17,0x12,0x19])
         #bus.write_word_data(SLAVE_ADDRESS,register_write,ord("1"))
         #bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13])
         #bus.write_word_data(0x0e,register_write,0x14)
         #bus.write_block_data(0x0,register_write,0x14)
         #bus.write_i2c_block_data(0x0e,register_write,[0x17])
-        time.sleep(1)
         R_Read()
      #とりあえず石川さんのコマンドをそのまま
      #リクエス
@@ -62,15 +62,14 @@ while True:
         #bus.write_i2c_block_data(0x0e,register_write,[0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00])
         #bus.write_i2c_block_data(0x0e,register_write,ord('a'))
         #bus.write_word_data(SLAVE_ADDRESS,register_write,ord("r"))
-        bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x11,0x18,0x16])
-        time.sleep(1)
-        R_Read()
+        bus.write_i2c_block_data(SLAVE_ADDRESS,0x11,[0x18,0x16])
+        #R_Read()
     elif command == 'test':
         #bus.write_i2c_block_data(0x0e,register_write,[0x00,0x00,0x00,0x00,0x00,0x00])
-        #bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13,0x14,0x15])
-        bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x10])
+        bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x14,0x15])
+        #bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x10])
         print("sended")
-        R_Read()
+        #R_Read()
         #bus.write_i2c_block_data(0x0e,register_write,[0x13,0x14,0x15])
         #print('Test')
         
@@ -88,8 +87,8 @@ while True:
         #time.sleep(1)
         #R_Read()
     elif command =='erase':
-        bus.write_i2c_block_data(0x0e,register_write,[0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00])
-        bus.write_i2c_block_data(0x0e,register_read,[0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00])
+        bus.write_i2c_block_data(0x0e,0x00,[0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00])
+        bus.write_i2c_block_data(0x0e,0x00,[0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00])
 
         print("erased")
     time.sleep(1)

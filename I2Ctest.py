@@ -28,7 +28,7 @@ def R_Read():
     #print(bus.read_block_data(SLAVE_ADDRESS,register_read))ここをいじるとクラッシュが発生するためいじらないこと。
 
 while True:
-    bus.write_byte_data(SLAVE_ADDRESS,register_write,ord("1"))
+    #bus.write_byte_data(SLAVE_ADDRESS,register_write,ord("1"))
     R_Read()
     time.sleep(1)
     
