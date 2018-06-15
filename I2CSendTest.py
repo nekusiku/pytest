@@ -12,28 +12,37 @@ SLAVE_ADDRESS = 0x0e#マイコンのi2Cアドレス、ここは絶対に変え�
 register_read = 0x1d#読み込み用アドレス
 register_write= 0x1c#書き込み用アドレス
 
+#def Read_CallBack:
+    
+
 def R_Read():
-    #reading=int(bus.read_byte_data(SLAVE_ADDRESS,register_read))#指定されたアドレスのデータを１バイト読み取る
-    #print(reading)
-    print("address_byte")
-    read = int(bus.read_byte(SLAVE_ADDRESS))
-    print(read)
-    print("i2c")
-    print(bus.read_i2c_block_data(SLAVE_ADDRESS,register_write))
-    print(bus.read_i2c_block_data(SLAVE_ADDRESS,register_read))
-    print("byte")
-    print(bus.read_byte_data(SLAVE_ADDRESS,register_write))
-    print(bus.read_byte_data(SLAVE_ADDRESS,register_read))
-    print("word")
-    print(bus.read_word_data(SLAVE_ADDRESS,register_write))
-    print(bus.read_word_data(SLAVE_ADDRESS,register_read))
-    #print(bus.read_block_data(SLAVE_ADDRESS,register_read))ここをいじるとクラッシュが発生するためいじらないこと。
+    reading=int(bus.read_byte_data(SLAVE_ADDRESS,register_write))#指定されたアドレスのデータを１バイト読み取る
+    print(reading)
+
+    #print("address_byte")
+    #read = int(bus.read_byte(SLAVE_ADDRESS))
+    #print(read)
+    #print("i2c")
+    #print(bus.read_i2c_block_data(SLAVE_ADDRESS,register_write))
+    #print(bus.read_i2c_block_data(SLAVE_ADDRESS,register_read))
+    #print("byte")
+    #print(bus.read_byte_data(SLAVE_ADDRESS,register_write))
+    #print(bus.read_byte_data(SLAVE_ADDRESS,register_read))
+    #print("word")
+    #print(bus.read_word_data(SLAVE_ADDRESS,register_write))
+    #print(bus.read_word_data(SLAVE_ADDRESS,register_read))
+
+def Read_CallBack:
+    
+    
+def Send_CallBack:
+    
 def D_Read():
     d_read=str(bus.read_byte(SLAVE_ADDRESS).decode())
     print(d_read)
 #read = int(bus.read_i2c_block_data(SLAVE_ADDRESS,register_SLAVE,10))
 #bus.write_i2c_block_data(0x0e,register_write,[0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00])
-while True:
+while int(bus.read_byte_data(SLAVE_ADDRESS,register_write)) == 0:
     #bus.write_i2c_block_data(0x0e,0x1d,ord("1"))
     #print("初期化")
     #R_Read()
@@ -42,20 +51,15 @@ while True:
     #R_Read()
     #bus.write_byte_data(SLAVE_ADDRESS,register_write,ord("1"))
     #print("初期化終わり")
-
+    R_Read()
     command = input("Enter command: ad-pushAD, re-request, ping-ping,b12-bc:")#コマンド入力
     if command == 'measure':#AD変換
         
-        R_Read()
+        time.sleep(1)
         print("ad")
         print("0x14=20を送る")
-        bus.write_i2c_block_data(0x0e,register_write,[0x17,0x12,0x19])
-        #bus.write_word_data(SLAVE_ADDRESS,register_write,ord("1"))
-        #bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13])
-        #bus.write_word_data(0x0e,register_write,0x14)
-        #bus.write_block_data(0x0,register_write,0x14)
-        #bus.write_i2c_block_data(0x0e,register_write,[0x17])
-        R_Read()
+        bus.write_i2c_block_data(SLAVE_ADDRESS,0x17,[0x12,0x19])
+        
      #とりあえず石川さんのコマンドをそのまま
      #リクエス
     elif command == 'r':
@@ -65,33 +69,24 @@ while True:
         bus.write_i2c_block_data(SLAVE_ADDRESS,0x11,[0x18,0x16])
         #R_Read()
     elif command == 'test':
-        #bus.write_i2c_block_data(0x0e,register_write,[0x00,0x00,0x00,0x00,0x00,0x00])
         bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x14,0x15])
-        #bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x10])
         print("sended")
-        #R_Read()
-        #bus.write_i2c_block_data(0x0e,register_write,[0x13,0x14,0x15])
-        #print('Test')
-        
-        #bus.write_i2c_block_data(0x0e,register_write,[0x13])
-       
-        #print(bus.read_i2c_block_data(0x0e,register_write,3))
-        #print(0x18)
-        #time.sleep(1)
         #R_Read()
         print("end")
     elif command =='read':
-        #bus.write_block_data(0x0e,register_write,[0x00,0x00,0x00,0x00,0x00,0x00])
         R_Read()
-        time.sleep(1)
-        #time.sleep(1)
-        #R_Read()
     elif command =='erase':
         bus.write_i2c_block_data(0x0e,0x00,[0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00])
-        bus.write_i2c_block_data(0x0e,0x00,[0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00])
-
+        
         print("erased")
+
+        
     time.sleep(1)
+    break;
+while int(bus.read_byte_data(SLAVE_ADDRESS,register_write)) != 0:
+    print("read_mode")
+    print(int(bus.read_byte_data(SLAVE_ADDRESS,register_write)))
+    break;
     #指定されたバイト数のデータを読み取る、この読み取り部分
 """
 while True:
