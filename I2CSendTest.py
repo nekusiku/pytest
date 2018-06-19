@@ -18,52 +18,66 @@ register_write= 0x1c#書き込み用アドレス
 
 read_flag=False
 send_flag=False
+Read_Wait_Flag =False
+Send_Wait_Flag =False
 #def Read_CallBack:
 
-
-
-def Task():
-    TaskNo= TaskName[0]#Init
-    print(TaskNo)
-    if TaskNo == TaskName[0]:
-        TaskNo = TaskName[1]#Wait
-        print(TaskNo)
-        time.sleep(1)
-    if TaskNo==TaskName[1]:
-        TaskNo = TaskName[2]#ReadStart
-        print(TaskNo)
-        time.sleep(1)
-    if TaskNo==TaskName[2]:
-        TaskNo = TaskName[3]#ReadWait
-        print(TaskNo)
-        time.sleep(1)
-    if TaskNo==TaskName[3]:
+def Task_Send():
+    TaskSendNo0 = TaskName[3]
+    if TaskSendNo0==TaskName[3]:
         if read_flag is True:
-            TaskNo = TaskName[4]#ReadEnd
-            print(TaskNo)
+            TaskSendNo0 is None
+            TaskSendNo1 = TaskName[4]#ReadEnd
+            print(TaskSendNo1)
             time.sleep(1)
-    if TaskNo==TaskName[4]:
-        TaskNo = TaskName[5]#SendWait
-        Task_Command()
-        print(TaskNo)
+            if TaskSendNo1==TaskName[4]:
+                TaskSendNo1 is None
+                TaskSendNo2 = TaskName[5]#SendWait
+                Task_Command()
+                print(TaskSendNo2)
+                time.sleep(1)
+                if TaskSendNo2==TaskName[5]:
+                    if send_flag is True:
+                        TaskSendNo2 is None
+                        TaskNo0 = TaskName[1]
+                        print(TaskNo)
+                        time.sleep(1)
+
+def Task_Read():
+    TaskNo = TaskName[0]
+    #print(TaskNo)
+    if TaskNo == TaskName[0]:
+        #TaskNo = 0
+        TaskNo1 = TaskName[1]#Wait
+        print(TaskNo1)
         time.sleep(1)
-    if TaskNo==TaskName[5]:
-        if send_flag is True:
-            TaskNo = TaskName[1]
-            print(TaskNo)
-            time.sleep(1)
+
+    if TaskNo1==TaskName[1]:
+        TaskNo1 is None
+        TaskNo2 = TaskName[2]#ReadStart
+        R_Read()
+        print(TaskNo2)
+        time.sleep(1)
+    if TaskNo2==TaskName[2]:
+        TaskNo2 is None
+        TaskNo3 = TaskName[3]#ReadWait
+        print(TaskNo3)
+        time.sleep(1)
+ 
     else:
         TaskNo = TaskName[1]
         print('hoge')
         time.sleep(1)
-        
+      
 
 def R_Read():
     reading=int(bus.read_byte_data(SLAVE_ADDRESS,register_write))#指定されたアドレスのデータを１バイト読み取る
     reading is None
+    time.sleep(1)
     print(reading)
+    time.sleep(1)
     Read_CallBack()
-
+    
     #print("address_byte")
     #read = int(bus.read_byte(SLAVE_ADDRESS))
     #print(read)
@@ -123,13 +137,16 @@ def Task_Command():
             #R_Read()
         elif command == 'test':
             bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x14,0x15])
+            Task_Send()
             Send_CallBack()
         elif command =='read':
-            reading = 0
-            R_Read()
-            Read_CallBack()
+            #reading = 0
+            Task_Read()
+            #R_Read()
+            #Read_CallBack()
+            
         elif command =='erase':
-            bus.write_i2c_block_data(0x0e,0x00,[0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00])
+            bus.write_i2c_block_data(0x0e,0x00,[0x00,0x00])
             print("erased")
         elif command =='wait':
             if send_flag is True:
@@ -144,5 +161,10 @@ def Task_Command():
 #    break;
 
 while True:
-    Task_Command()
-    #Task_Read()
+    
+    if read_flag is True:
+        R_Read()
+    else:
+        Task_Command()
+        
+        #Task_Read()
