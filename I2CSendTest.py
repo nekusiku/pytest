@@ -16,8 +16,9 @@ SLAVE_ADDRESS = 0x0e#マイコンのi2Cアドレス、ここは絶対に変え�
 register_read = 0x1d#読み込み用アドレス
 register_write= 0x1c#書き込み用アドレス
 
-read_flag=False
 send_flag=False
+read_flag=False
+
 Read_Wait_Flag =False
 Send_Wait_Flag =False
 #def Read_CallBack:
@@ -25,11 +26,12 @@ Send_Wait_Flag =False
 def Task_Send():
     TaskSendNo = TaskName[5]
     if TaskSendNo==TaskName[5]:
-        if send_flag is True:
-            TaskSendNo is None
+        if send_flag == True:
+            TaskSendNo == None
             TaskSendNo = TaskName[1]
             print(TaskNo)
             time.sleep(1)
+            Wait()
 """
 def Task_Read():
     TaskNo = TaskName[0]
@@ -72,13 +74,14 @@ def Task_Read():
 """
 
 def R_Read():
-    Wait()
-    reading=int(bus.read_byte_data(SLAVE_ADDRESS,register_write))#指定されたアドレスのデータを１バイト読み取る
+    #Wait()
+    reading=int(bus.read_byte(SLAVE_ADDRESS))#指定されたアドレスのデータを１バイト読み取る
     
     if reading != 0:
         #Wait()
         print(reading)
-        #Wait()
+        Wait()
+        reading=0
         Read_CallBack()
     elif reading == 0:
         
@@ -86,8 +89,15 @@ def R_Read():
         Read_CallBack()
         
     
-def Wait():
+def Wait(send_flag):
     time.sleep(1.5)
+    if send_flag==True and read_flag==False:
+        print("sendTrue")
+        R_Read()
+    elif read_flag==True and send_flag==False:
+        print("readTrue")
+    else:
+        print("none")
     #print("address_byte")
     #read = int(bus.read_byte(SLAVE_ADDRESS))
     #print(read)
@@ -103,11 +113,14 @@ def Wait():
 
 def Read_CallBack():
     read_flag=True
+    Wait()
     R_Read()
     
 def Send_CallBack():
+    #send_flag = True
     send_flag=True
     print('send')
+    Wait(send_flag)
 
 #read = int(bus.read_i2c_block_data(SLAVE_ADDRESS,register_SLAVE,10))
 #bus.write_i2c_block_data(0x0e,register_write,[0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00])
@@ -145,9 +158,10 @@ def Task_Command():
         elif command == 'test':
             bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x14,0x15])
             Task_Send()
+            
             Send_CallBack()
-            Wait()
-            R_Read()
+            
+            #R_Read()
         elif command =='read':
             #reading = 0
             #Task_Read()
@@ -158,10 +172,11 @@ def Task_Command():
             bus.write_i2c_block_data(0x0e,0x00,[0x00,0x00])
             print("erased")
         elif command =='wait':
-            if send_flag is True:
+            Wait()
+            """if send_flag is True:
                 R_Read()
             else :
-                time.sleep(5)
+                time.sleep(5)"""
         #time.sleep(1)
     #break;
 #while read_flag is True:
@@ -170,10 +185,10 @@ def Task_Command():
 #    break;
 
 while True:
-    
-    if read_flag is True:
+
+    if read_flag == True:
         R_Read()
-    else:
+    elif read_flag == False:
         Task_Command()
         
         #Task_Read()
