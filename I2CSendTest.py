@@ -82,7 +82,7 @@ def R_Read():
     #second_reading=0
     #second_reading=bus.read_word_data(SLAVE_ADDRESS,register_write)#指定されたアドレスのデータを１バイト読み取る
     try :
-        reading=bus.read_i2c_block_data(SLAVE_ADDRESS,register_read)
+        reading=bus.read_i2c_block_data(SLAVE_ADDRESS,register_read,10)
     except Exception:
         print("つながりません")
         
