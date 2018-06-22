@@ -13,7 +13,7 @@ TaskName=['Init','Wait','ReadStart','ReadWait','ReadEnd','SendWait']
 
 bus = smbus.SMBus(1)#i2Cの設定
 SLAVE_ADDRESS = 0x0e#マイコンのi2Cアドレス、ここは絶対に変えない。
-register_read = 0x1d#読み込み用アドレス
+register_read = 0x1c#読み込み用アドレス
 register_write= 0x1c#書き込み用アドレス
 
 send_flag=False
@@ -27,6 +27,7 @@ seconed_reaging = 0
 
 #first_reading =bus.read_byte_data(SLAVE_ADDRESS,register_read)
 #print(first_reading)
+"""
 def Task_Send():
     TaskSendNo = TaskName[5]
     if TaskSendNo==TaskName[5]:
@@ -35,7 +36,7 @@ def Task_Send():
             TaskSendNo = TaskName[1]
             print(TaskNo)
             time.sleep(1)
-            Wait(Send_flag)
+            Wait(Send_flag)"""
 """
 def Task_Read():
     TaskNo = TaskName[0]
@@ -78,15 +79,24 @@ def Task_Read():
 """
 
 def R_Read():
+    
+    count = 0
+    while count < 5:
+        reading=0
         #time.sleep(5)
-    #second_reading=0
-    #second_reading=bus.read_word_data(SLAVE_ADDRESS,register_write)#指定されたアドレスのデータを１バイト読み取る
-    try :
-        reading=bus.read_i2c_block_data(SLAVE_ADDRESS,register_read,10)
-    except Exception:
-        print("つながりません")
-        
-    print(reading)
+        #second_reading=0
+        #reading_block = 0
+        try :
+            #reading_block=bus.read_block_data(SLAVE_ADDRESS,register_read)
+            reading=bus.read_i2c_block_data(SLAVE_ADDRESS,register_read)
+            #reading =bus.read_byte(SLAVE_ADDRESS)
+            #reading=bus.read_word_data(SLAVE_ADDRESS,register_read)#指定されたアドレスのデータを１バイト読み取る
+        except Exception:
+            print("受信できませんでした")
+            count = count -1
+        count = count+1
+        print(count)
+        print(reading)
     
     #second_reading=int(bus.read_byte(SLAVE_ADDRESS))
     #print(second_reading)
@@ -108,7 +118,7 @@ def Wait(send_flag):
     if send_flag==True and read_flag==False:
         print("sendTrue")
        
-        R_Read()
+        #R_Read()
     else:
         print("none")
         
@@ -140,13 +150,15 @@ def Read_CallBack(read_flag):
         Wait(read_flag)
     elif read_flag==False:
         print("can not read")
-        R_Read()
+       
     
 def Send_CallBack(send_flag):
     if send_flag == True:
         send_flag=True
         print('send')
         #Wait(send_flag)
+        #for i in range(0,5):
+        R_Read()
     elif send_flag == False:
         send_flag=False
         print('can not send')
@@ -188,13 +200,14 @@ def Task_Command():
             try:
                 bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x14,0x15])
                 send_flag = True
+                #time.sleep(0.5)
                 Send_CallBack(send_flag)
-                R_Read()
+                
             except Exception:
                 print("送信できませんでした")
                 send_flag = False
                 Send_CallBack(send_flag)
-                
+            
                 
             
             #read_write = bus.read_i2c_block_data(SLAVE_ADDRESS,register_write)
@@ -207,6 +220,7 @@ def Task_Command():
             time.sleep(2)
             #reading = 0
             #Task_Read()
+            #for j in range(0,5):
             R_Read()
             #time.sleep(1)
             #print(reading)
