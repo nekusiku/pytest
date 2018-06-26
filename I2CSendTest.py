@@ -98,6 +98,7 @@ def R_Read():
         count = count+1
         print(count)
         print(reading)
+        #print(str(reading).encode.utf-8)
     
     #second_reading=int(bus.read_byte(SLAVE_ADDRESS))
     #print(second_reading)
@@ -197,13 +198,13 @@ def Task_Command():
             bus.write_i2c_block_data(SLAVE_ADDRESS,0x11,[0x18,0x16])
             #R_Read()
         elif command == "test":
+            bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[1])
             test = 0
             try:
-                bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[1])
-                time.sleep(1)
-                bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[0x13,0x14,0x15])
+                time.sleep(0.1)
+                bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x14,0x15])
                 send_flag = True
-                #time.sleep(0.5)
+                time.sleep(0.5)
                 Send_CallBack(send_flag)
                 
             except Exception:
@@ -222,20 +223,15 @@ def Task_Command():
            #Send_CallBack()
         elif command =='read':
             time.sleep(2)
-            #reading = 0
-            #Task_Read()
-            #for j in range(0,5):
             R_Read()
-            #time.sleep(1)
-            #print(reading)
-            #reading=bus.read_byte_data(SLAVE_ADDRESS,register_read)
-            #reading=bus.read_byte(SLAVE_ADDRESS)
-            #if reading != 0:
-            #    print(reading)
-            #Read_CallBack()
+            
         elif command =='erase':
-            bus.write_i2c_block_data(0x0e,0x00,[0x00,0x00])
+            bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[1])
+            time.sleep(1)
             print("erased")
+        elif command =='uname':
+            time.sleep(0.1)
+            print(bus.read_word_data(SLAVE_ADDRESS,0x0f))
         elif command =='wait_read':
             Wait(read_flag)
         elif command =='wait_send':
