@@ -13,9 +13,9 @@ TaskName=['Init','Wait','ReadStart','ReadWait','ReadEnd','SendWait']
 
 bus = smbus.SMBus(1)#i2Cの設定
 SLAVE_ADDRESS = 0x0e#マイコンのi2Cアドレス、ここは絶対に変えない。
-register_read = 0x1d#読み込み用アドレス
-register_write= 0x1b#書き込み用アドレス
-
+register_read = 0x1c#読み込み用デバイスレジスタアドレス
+register_write= 0x1e#書き込み用デバイスレジスタアドレス
+_Command = 0x40
 send_flag=False
 read_flag=False
 
@@ -88,12 +88,12 @@ def R_Read():
         #reading_block = 0
         try :
             #reading_block=bus.read_block_data(SLAVE_ADDRESS,register_read)
-            reading=bus.read_word_data(SLAVE_ADDRESS,register_read)
+            reading=bus.read_i2c_block_data(SLAVE_ADDRESS,0x1c,10)
             #reading =bus.read_byte(SLAVE_ADDRESS)
             #reading=bus.read_word_data(SLAVE_ADDRESS,register_read)#指定されたアドレスのデータを１バイト読み取る
         except Exception:
             print("受信できませんでした")
-            break
+            
             count = count -1
         count = count+1
         print(count)
@@ -180,6 +180,7 @@ def Task_Command():
     #if send_flag is True:
     #    Read()
     #else:
+        #bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[1])
         command = 0
         command = input("Enter command:read-read data,test-send Test ")#コマンド入力
         if command == 'measure':#AD変換
@@ -198,7 +199,7 @@ def Task_Command():
             bus.write_i2c_block_data(SLAVE_ADDRESS,0x11,[0x18,0x16])
             #R_Read()
         elif command == "test":
-            bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[1])
+            
             test = 0
             try:
                 time.sleep(0.1)
@@ -253,6 +254,7 @@ while True:
     #    break
     #    R_Read()
     #elif read_flag == False:
+        time.sleep(0.01)
         Task_Command()
     #    break
         #Task_Read()
