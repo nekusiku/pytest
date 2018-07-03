@@ -31,6 +31,7 @@ Send_Wait_Flag =False
 first_reading=0
 seconed_reaging = 0
 count=0
+word=0
 #first_reading =bus.read_byte_data(SLAVE_ADDRESS,register_read)
 #print(first_reading)
 """
@@ -83,9 +84,13 @@ def Task_Read():
         print('hoge')
         time.sleep(1)
 """
-
+def wordset(wordset):
+    if wordset==T:
+        wordset=T
+    
+    
 def R_Read():
-    time.sleep(0.01)
+    #time.sleep(0.01)
     
     first_reading = 0
     second_reading = 0
@@ -98,20 +103,56 @@ def R_Read():
     #reading=bus.read_i2c_block_data(SLAVE_ADDRESS,0xfe934)
     #reading=bus.read_i2c_block_data(SLAVE_ADDRESS,_Data,3)
     #for count in range(5):
-    first_reading=bus.read_byte_data(SLAVE_ADDRESS,0x2c)
-    second_reading=bus.read_byte_data(SLAVE_ADDRESS,0x2c)
+    #first_reading=bus.read_i2c_block_data(SLAVE_ADDRESS,0x2c,5)
+    #second_reading=bus.read_byte_data(SLAVE_ADDRESS,0x2c)
+    
     #print("Count:")
     #print(count)
-    if first_reading==0xff:
+    """if second_reading==0xff:
         read_flag = False
+        print(first_reading)
         #count=count+1
-        Read_CallBack(read_flag)
-    else:
+        #Read_CallBack(read_flag)
+        print("huga")"""
+    if second_reading==0x54:
+        print(first_reading)
+        print(second_reading)
+        print("0x54==T")
+        T=(chr(second_reading))
+        print(T)
+        wordset=T
         read_flag=True
-        #count=count+1
-        print(hex(first_reading))
-        print(chr(first_reading))
         Read_CallBack(read_flag)
+        if second_reading==0x65:
+            print(first_reading)
+            #print(chr(second_reading))
+            print("0x65=e")
+            read_flag=True
+            Read_CallBack(read_flag)
+            if second_reading==0x73:
+                print(first_reading)
+                #print(chr(second_reading))
+                print("0x73=s")
+                read_flag=True
+                Read_CallBack(read_flag)
+                if second_reading==0x74:
+                    print(first_reading)
+                    print(chr(second_reading))
+                    print("0x74=t")
+                    read_flag=True
+                    Read_CallBack(read_flag)
+    else:
+        #read_flag=True
+        #count=count+1
+        #print(hex(first_reading))
+        #print(chr(first_reading))
+        #print((first_reading))
+        print(second_reading)
+        print(chr(second_reading))
+        #print(chr(second_reading))
+        #print(hex(second_reading))
+        #Read_CallBack(read_flag)
+        print("hoge")
     """if first_reading==0x54 :
         print(hex(first_reading))
         print(chr(first_reading))
@@ -173,7 +214,7 @@ def R_Read():
 
 def Read_CallBack(read_flag):
     if read_flag==True:
-        print("can read")
+        print("read")
         
         R_Read()
         #Wait(read_flag)
@@ -188,7 +229,7 @@ def Send_CallBack(send_flag):
         #Wait(send_flag)
         #for i in range(0,5):
         #time.sleep(0.5)
-        #R_Read()
+        R_Read()
     elif send_flag == False:
         send_flag=False
         print('can not send')
@@ -210,10 +251,11 @@ def Task_Command():
     #else:
         #bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[1])
         command = 0
+        
         command = input("Enter command:read-read data,test-send Test ")#コマンド入力
         if command == 'measure':#AD変換
         
-            time.sleep(1)
+            
             print("ad")
             print("0x14=20を送る")
             bus.write_i2c_block_data(SLAVE_ADDRESS,0x17,[0x12,0x19])
@@ -268,10 +310,14 @@ def Task_Command():
             Wait(read_flag)
         elif command =='wait_send':
             Wait(send_flag)
+        """elif command =='combine':
+            Word=T+E+S+T
+            print(Word)"""
 """if send_flag is True:
                 R_Read()
             else :
                 time.sleep(5)"""
+        
         #time.sleep(1)
     #break;
 #while read_flag is True:
