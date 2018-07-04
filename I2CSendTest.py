@@ -95,7 +95,7 @@ def R_Read():
     first_reading = 0
     second_reading = 0
     #reading_list
-    #while count < 5:
+    
     #    reading=0
         #time.sleep(5)
     #try :
@@ -104,7 +104,9 @@ def R_Read():
     #reading=bus.read_i2c_block_data(SLAVE_ADDRESS,_Data,3)
     #for count in range(5):
     #first_reading=bus.read_i2c_block_data(SLAVE_ADDRESS,0x2c,5)
-    #second_reading=bus.read_byte_data(SLAVE_ADDRESS,0x2c)
+##    for count in range(5):
+    second_reading=bus.read_byte_data(SLAVE_ADDRESS,0x2c)
+    print(second_reading)
     
     #print("Count:")
     #print(count)
@@ -123,24 +125,24 @@ def R_Read():
         wordset=T
         read_flag=True
         Read_CallBack(read_flag)
-        if second_reading==0x65:
-            print(first_reading)
-            #print(chr(second_reading))
-            print("0x65=e")
-            read_flag=True
-            Read_CallBack(read_flag)
-            if second_reading==0x73:
-                print(first_reading)
-                #print(chr(second_reading))
-                print("0x73=s")
-                read_flag=True
-                Read_CallBack(read_flag)
-                if second_reading==0x74:
-                    print(first_reading)
-                    print(chr(second_reading))
-                    print("0x74=t")
-                    read_flag=True
-                    Read_CallBack(read_flag)
+    if second_reading==0x65:
+        print(first_reading)
+        #print(chr(second_reading))
+        print("0x65=e")
+        read_flag=True
+        Read_CallBack(read_flag)
+    if second_reading==0x73:
+        print(first_reading)
+        #print(chr(second_reading))
+        print("0x73=s")
+        read_flag=True
+        Read_CallBack(read_flag)
+    if second_reading==0x74:
+        print(first_reading)
+        print(chr(second_reading))
+        print("0x74=t")
+        read_flag=True
+        Read_CallBack(read_flag)
     else:
         #read_flag=True
         #count=count+1
