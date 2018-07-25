@@ -30,3 +30,7 @@ print(V)
 temp=V/1023
 print("temp=")
 print(temp)
+print(chr(72))
+print(hex(72))
+print(0x2c)
+print(0x2c<<1)
