@@ -91,30 +91,34 @@ def wordset(wordset):
     
     
 def R_Read(read_flag):
+    reading=0
+    #reading=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,10)
     #time.sleep(0.01)
     if read_flag=='test':
-        first_reading = 0
+        reading=0
+        #first_reading = 0
         second_reading = 0
         time.sleep(0.1)
-        second_reading=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,4)
+        reading=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,4)
         #second_reading=bus.read_word_data(SLAVE_ADDRESS,0x2c)
-        print(second_reading)
+        print(reading)
     
         #if count==0:
-        read_0=second_reading[0]
+        test_0=reading[0]
         #print(read_0)
-        read_1=(second_reading[1])
+        test_1=reading[1]
         #print(read_1)
-        read_2=(second_reading[2])
+        test_2=(reading[2])
         #print(read_2)
-        read_3=(second_reading[3])
+        test_3=(reading[3])
         #print(read_3)
-        print(chr(read_0)+chr(read_1)+chr(read_2)+chr(read_3))
+        print(chr(test_0)+chr(test_1)+chr(test_2)+chr(test_3))
     if read_flag=='ad':
         ad_reading=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,2)
         print(ad_reading)
     if read_flag=='r':
-        r_reading=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,2)
+        r_reading=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,10)
+        #r_data_0=reading[0]
         print(r_reading)
     if read_flag=='else':
         else_reading=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS)
@@ -164,7 +168,7 @@ def Send_CallBack(send_flag):
         print('can not send')
     elif send_flag == 'T_True':
         
-        bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x14,0x15])
+        #bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x14,0x15])
         read_flag='e_True'
         
         R_Read()
@@ -194,10 +198,10 @@ def Task_Command():
     if command == 'measure':#AD変換
         
             
-            print("ad")
+            print("Measure")
             
+            #bus.write_i2c_block_data(SLAVE_ADDRESS,0x4d,[0x65,0x61,0x73,0x75,0x72,0x65])
             bus.write_i2c_block_data(SLAVE_ADDRESS,0x11,[0x18,0x16])
-            print("0x14=20を送る")
             read_flag='ad'
             R_Read(read_flag)
          #とりあえず石川さんのコマンドをそのまま
@@ -208,6 +212,7 @@ def Task_Command():
             #bus.write_word_data(SLAVE_ADDRESS,register_write,ord("r"))
             bus.write_i2c_block_data(SLAVE_ADDRESS,0x17,[0x12,0x19])
             read_flag='r'
+            time.sleep(0.1)
             R_Read(read_flag)
     elif command == 'test':
             
@@ -215,6 +220,7 @@ def Task_Command():
             
                 
             bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x14,0x15])
+            #bus.write_i2c_block_data(SLAVE_ADDRESS,0x54,[0x65,0x73,0x74])
             #bus.write_i2c_block_data(SLAVE_ADDRESS,0x2c,)
             #bus.write_i2c_block_data(SLAVE_ADDRESS,0x54,[0x45,0x53,0x54])
             #send_flag ='T_True'
