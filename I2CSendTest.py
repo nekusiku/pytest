@@ -114,7 +114,7 @@ def R_Read(read_flag):
         #print(read_3)
         print(chr(test_0)+chr(test_1)+chr(test_2)+chr(test_3))
     if read_flag=='ad':
-        ad_reading=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,2)
+        ad_reading=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,10)
         print(ad_reading)
     if read_flag=='r':
         r_reading=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,10)
@@ -201,8 +201,9 @@ def Task_Command():
             print("Measure")
             
             #bus.write_i2c_block_data(SLAVE_ADDRESS,0x4d,[0x65,0x61,0x73,0x75,0x72,0x65])
-            bus.write_i2c_block_data(SLAVE_ADDRESS,0x11,[0x18,0x16])
+            bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x18,0x16])
             read_flag='ad'
+            time.sleep(1)
             R_Read(read_flag)
          #とりあえず石川さんのコマンドをそのまま
          #リクエス
