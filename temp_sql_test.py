@@ -13,4 +13,5 @@ test_temp=str("test_temp=21.15")
 print(test_temp)
 
 #このデータをデータベースに入れたい。
+#データベースに入れるための関数
 
