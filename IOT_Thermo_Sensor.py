@@ -6,6 +6,7 @@ import time
 import RPi.GPIO as GPIO
 import serial
 import sys
+import sqlite3
 from enum import IntEnum
 
 TaskName=['Init','Wait','ReadStart','ReadWait','ReadEnd','SendWait']
@@ -33,6 +34,7 @@ first_reading=0
 seconed_reaging = 0
 count=0
 word=0
+
 #first_reading =bus.read_byte_data(SLAVE_ADDRESS,register_read)
 #print(first_reading)
 """
@@ -92,34 +94,35 @@ def wordset(wordset):
     
 def R_Read(read_flag):
     reading=0
-    #reading=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,10)
-    #time.sleep(0.01)
     if read_flag=='test':
         reading=0
-        #first_reading = 0
         second_reading = 0
         time.sleep(0.1)
-        reading=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,4)
-        #second_reading=bus.read_word_data(SLAVE_ADDRESS,0x2c)
-        print(reading)
-    
-        #if count==0:
-        test_0=reading[0]
-        #print(read_0)
-        test_1=reading[1]
-        #print(read_1)
-        test_2=(reading[2])
-        #print(read_2)
-        test_3=(reading[3])
-        #print(read_3)
-        print(chr(test_0)+chr(test_1)+chr(test_2)+chr(test_3))
+        test=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,4)
+        test_list=[]
+        for i in range(4):
+            test_list,insert(i,chr(test[i]))
+        test_mes=''.join(test_list)
+        print(test_mes)
+        
     if read_flag=='ad':
-        ad_reading=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,10)
-        print(ad_reading)
+        msr=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,7)
+        print(msr)
+        msr_list=[]
+        for i in range(7):
+            msr_list.insert(i,chr(msr[i]))
+        msr_mes=''.join(msr_list)
+        print(msr_mes)
+        
     if read_flag=='r':
-        r_reading=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,10)
-        #r_data_0=reading[0]
-        print(r_reading)
+        temp=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,11)
+        temp_list=[]
+        print(temp)
+        for i in range(11):
+            temp_list.insert(i,chr(temp[i]))
+        temp_mes=''.join(temp_list)
+        print(temp_mes)
+        
     if read_flag=='else':
         else_reading=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS)
         print(else_reading)
@@ -174,24 +177,9 @@ def Send_CallBack(send_flag):
         R_Read()
     elif send_flag == 'E_True':
         send_flag ='s_True'
-        
-#read = int(bus.read_i2c_block_data(SLAVE_ADDRESS,register_SLAVE,10))
-#bus.write_i2c_block_data(0x0e,register_write,[0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00])
-#while read_flag is False:
-    
-    #bus.write_i2c_block_data(0x0e,0x1d,ord("1"))
-    #print("初期化")
-    #R_Read()
-    #bus.write_i2c_block_data(0x0e,register_write,[0x13])
-    #print(bus.read_i2c_block_data(0x0e,0x01,7))
-    #R_Read()
-    #bus.write_byte_data(SLAVE_ADDRESS,register_write,ord("1"))
-    #print("初期化終わり")
+
 def Task_Command():
-    #if send_flag is True:
-    #    Read()
-    #else:
-        #bus.write_i2c_block_data(SLAVE_ADDRESS,register_write,[1])
+    
     command = 0
         
     command = input("Enter command:read-read data,test-send Test ")#コマンド入力
@@ -203,41 +191,22 @@ def Task_Command():
             #bus.write_i2c_block_data(SLAVE_ADDRESS,0x4d,[0x65,0x61,0x73,0x75,0x72,0x65])
             bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x18,0x16])
             read_flag='ad'
-            time.sleep(1)
+            time.sleep(1.0)
             R_Read(read_flag)
          #とりあえず石川さんのコマンドをそのまま
          #リクエス
     elif command == 'r':
-            #bus.write_i2c_block_data(0x0e,register_write,[0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00])
-            #bus.write_i2c_block_data(0x0e,register_write,ord('a'))
-            #bus.write_word_data(SLAVE_ADDRESS,register_write,ord("r"))
             bus.write_i2c_block_data(SLAVE_ADDRESS,0x17,[0x12,0x19])
             read_flag='r'
-            time.sleep(0.1)
             R_Read(read_flag)
+            
     elif command == 'test':
-            
-            test = 0
-            
-                
+            test = 0    
             bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x14,0x15])
-            #bus.write_i2c_block_data(SLAVE_ADDRESS,0x54,[0x65,0x73,0x74])
-            #bus.write_i2c_block_data(SLAVE_ADDRESS,0x2c,)
-            #bus.write_i2c_block_data(SLAVE_ADDRESS,0x54,[0x45,0x53,0x54])
-            #send_flag ='T_True'
             send_flag=True    
-            #Send_CallBack(send_flag)
-            
-                
-            
-            #read_write = bus.read_i2c_block_data(SLAVE_ADDRESS,register_write)
-            #print(read_write)
-            #Task_Send()
-            #read_read = bus.read_i2c_block_data(SLAVE_ADDRESS,register_read)
-            #print(read_read)
-           #Send_CallBack()
             read_flag='test'
             R_Read(read_flag)
+            
     elif command =='read':
             
             read_flag='else'
@@ -247,25 +216,18 @@ def Task_Command():
             bus.write_i2c_block_data(SLAVE_ADDRESS,0x00,[0x00,0x00,0x00])
             time.sleep(1)
             print("erased")
+            
     elif command =='uname':
             time.sleep(0.1)
             print(bus.read_word_data(SLAVE_ADDRESS,0x0f))
+    
     elif command =='wait_read':
             Wait(read_flag)
+            
     elif command =='wait_send':
             Wait(send_flag)
        
 while True:
     
-    #if read_flag == True:
-    #    breakest
-    
-    #    R_Read()
-    #elif read_flag == False:
-        #time.sleep(0.01)
     Task_Command()
-    
-    
-        #    break
-            #Task_Read()
-    
+
