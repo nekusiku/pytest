@@ -7,6 +7,7 @@ import RPi.GPIO as GPIO
 import serial
 import sys
 import sqlite3
+from datetime import datetime
 from enum import IntEnum
 
 TaskName=['Init','Wait','ReadStart','ReadWait','ReadEnd','SendWait']
@@ -127,11 +128,12 @@ def R_Read(read_flag):
             temp_list.insert(i,chr(temp[i]))
         temp_mes=''.join(temp_list)
         print(temp_mes)
-        conn.execute("insert into TempTest values('"+str(temp_mes)+"','hamamatu')")
+        now=str(datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
+        conn.execute("insert into TempTest values('"+str(temp_mes)+"','"+now+"')")
         cur.execute("select*from temptest")
         for row in cur:
             print(str(row[0])+","+str(row[1]))
-        cur.close()
+        #cur.close()
     if read_flag=='else':
         else_reading=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS)
         print(else_reading)
@@ -217,9 +219,10 @@ def Task_Command():
             R_Read(read_flag)
             
     elif command =='read':
+            cur.execute("select*from temptest")
+            for row in cur:
+                print(str(row[0])+","+str(row[1]))
             
-            read_flag='else'
-            R_Read(read_flag)
             
     elif command =='erase':
             bus.write_i2c_block_data(SLAVE_ADDRESS,0x00,[0x00,0x00,0x00])
