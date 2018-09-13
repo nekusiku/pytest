@@ -35,6 +35,9 @@ seconed_reaging = 0
 count=0
 word=0
 
+conn = sqlite3.connect("Test_List.sqlite")
+cur=conn.cursor()
+#conn.execute("create table TempTest(temp, location)")
 #first_reading =bus.read_byte_data(SLAVE_ADDRESS,register_read)
 #print(first_reading)
 """
@@ -114,6 +117,8 @@ def R_Read(read_flag):
         msr_mes=''.join(msr_list)
         print(msr_mes)
         
+        
+        
     if read_flag=='r':
         temp=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,11)
         temp_list=[]
@@ -122,7 +127,11 @@ def R_Read(read_flag):
             temp_list.insert(i,chr(temp[i]))
         temp_mes=''.join(temp_list)
         print(temp_mes)
-        
+        conn.execute("insert into TempTest values('"+str(temp_mes)+"','hamamatu')")
+        cur.execute("select*from temptest")
+        for row in cur:
+            print(str(row[0])+","+str(row[1]))
+        cur.close()
     if read_flag=='else':
         else_reading=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS)
         print(else_reading)
