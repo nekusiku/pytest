@@ -1,0 +1,11 @@
+pi_test.getStyles()
+  styleId = api_test.insertStyle("large_red")
+  api_test.getStyle(styleId)
+  api_test.updateStyle(styleId)
+  api_test.deleteStyle(styleId)
+
+  api_test.getTemplates()
+  templateId = api_test.insertTemplate()
+  api_test.getTemplate(templateId)
+  api_test.updateTemplate(templateId)
+  api_test.deleteTemplate(templateId)

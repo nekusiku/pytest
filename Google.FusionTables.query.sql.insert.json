@@ -1,0 +1,11 @@
+{
+ "kind": "fusiontables#sqlresponse",
+ "columns": [
+  "rowid"
+ ],
+ "rows": [
+  [
+   "5"
+  ]
+ ]
+}
