@@ -44,7 +44,7 @@ class RunAPITest:
 
   def testInsertV2(self):
     print "v2 Query.sql insert"
-    sql = "INSERT INTO %s (TimeStamp, CpuTemperature) values('%s',%s)" % (tableid, '2011-11-11 11:11:11',11111)
+    sql = "INSERT INTO %s (Device_ID, TimeStamp, Temperature) values(%s,'%s',%s)" % (tableid, '2011-11-11 11:11:11',11111)
     data = '''{
       "sql": "%s"
     }''' % (sql)

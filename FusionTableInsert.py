@@ -1,12 +1,14 @@
 #!python3
 #encoding:utf-8
 
+import datetime
 import os.path
 import requests
 import urllib.parse
 import json
 import GetAccessTokenFromRefreshToken
-
+import time
+import IOT_Thermo_Sensor as IOT
 client_id = "1033655159638-fek1o17voj7hfut8hggaffceh1bab4po.apps.googleusercontent.com"
 client_secret = "TtvNOi4daznlLTjQJho66LwO"
 api_key = 'AIzaSyDJntsUxTlr6nOUTDqOuynw8OyJGw9Tai0'
@@ -38,7 +40,8 @@ class FusionTablesAPIRunner:
         file.close()
 
     def insert_request(self):
-        sql = "INSERT INTO %s (TimeStamp, CpuTemperature) values('%s',%s)" % (tableid, '2016-12-01 01:02:03',44444)
+        today = datetime.datetime.today()
+        sql = "INSERT INTO %s (Device_ID, TimeStamp, Temperature) values(%s,'%s',%s)" % (tableid, "001",today,IOT.temp_mes)
         headers={'Content-Type':'application/json'}
         data = {
             "sql": sql
@@ -75,7 +78,10 @@ class FusionTablesAPIRunner:
                 return False
 
 
-if __name__ == "__main__":
+while __name__ == "__main__":
     run = FusionTablesAPIRunner()
     run.initialize()
     run.insert()
+    print("done")
+    time.sleep(60)
+    

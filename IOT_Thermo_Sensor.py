@@ -7,6 +7,7 @@ import RPi.GPIO as GPIO
 import serial
 import sys
 import sqlite3
+import FusionTableInsert as Insert
 from datetime import datetime
 from enum import IntEnum
 
@@ -41,56 +42,7 @@ cur=conn.cursor()
 #conn.execute("create table TempTest(temp, location)")
 #first_reading =bus.read_byte_data(SLAVE_ADDRESS,register_read)
 #print(first_reading)
-"""
-def Task_Send():
-    TaskSendNo = TaskName[5]
-    if TaskSendNo==TaskName[5]:
-        if send_flag == True:
-            TaskSendNo == None
-            TaskSendNo = TaskName[1]
-            print(TaskNo)
-            time.sleep(1)
-            Wait(Send_flag)"""
-"""
-def Task_Read():
-    TaskNo = TaskName[0]
-    #print(TaskNo)
-    if TaskNo == TaskName[0]:
-        TaskNo = 0
-        TaskNo1 = TaskName[1]#Wait
-        print(TaskNo1)
-        time.sleep(1)
-    if TaskNo1==TaskName[1]:
-        TaskNo1 is None
-        TaskNo2 = TaskName[2]#ReadStart
-        R_Read()
-        print(TaskNo2)
-        time.sleep(1)    
-    if TaskNo2==TaskName[2]:
-        TaskNo2 is None
-        TaskNo3 = TaskName[3]#ReadWait
-        print(TaskNo3)
-        time.sleep(1)
-        if TaskNo3==TaskName[3]:
-            print(TaskNo3)
-            if read_flag is True:
-                TaskNo3 is None
-                TaskNo4 = TaskName[4]#ReadEnd
-                print(TaskNo4)
-                time.sleep(1)
-                if TaskNo4==TaskName[4]:
-                    TaskNo4 is None
-                    TaskNo5 = TaskName[5]#SendWait
-                    Task_Command()
-                    print(TaskNo5)
-                    time.sleep(1)
-            else:
-                TaskNo2 = TaskName[2]
-    else:
-        TaskNo = TaskName[1]
-        print('hoge')
-        time.sleep(1)
-"""
+
 def wordset(wordset):
     if wordset==T:
         wordset=T
@@ -129,20 +81,19 @@ def R_Read(read_flag):
         temp_mes=''.join(temp_list)
         print(temp_mes)
         now=str(datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
-        conn.execute("insert into TempTest values('"+str(temp_mes)+"','"+now+"')")
-        cur.execute("select*from temptest")
-        for row in cur:
-            print(str(row[0])+","+str(row[1]))
+        #conn.execute("insert into TempTest values('"+str(temp_mes)+"','"+now+"')")
+        #cur.execute("select*from temptest")
+        #for row in cur:
+        #    print(str(row[0])+","+str(row[1]))
         #cur.close()
+        run = Insert.FusionTablesAPIRunner()
+        run.initialize()
+        run.insert()
+        print("done")
     if read_flag=='else':
         else_reading=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS)
         print(else_reading)
-        #print(chr(second_reading))
-##    time.sleep(0.01)
-    #print("Count:")
-    #print(count)
-    
-        #print(chr(second_reading))
+
 
 
 def Read_CallBack(read_flag):
