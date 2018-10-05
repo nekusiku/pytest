@@ -8,11 +8,12 @@ import serial
 import sys
 import sqlite3
 import FusionTableInsert as Insert
-from datetime import datetime
+import importlib
+import datetime
 from enum import IntEnum
 
 TaskName=['Init','Wait','ReadStart','ReadWait','ReadEnd','SendWait']
-
+tableid = '1MNHaJ5Y9GbvSjAzXgI7_ww2sszbYIc88O2MYdewH'
 count = 0
 bus = smbus.SMBus(1)#i2Cの設定
 MICON_ADDRESS = 0x2c#マイコンのi2Cアドレス、ここでのアドレスはマイコンだと左に１ビットずれた状態になる。
@@ -36,7 +37,7 @@ first_reading=0
 seconed_reaging = 0
 count=0
 word=0
-
+Sql_Temp=0
 conn = sqlite3.connect("Test_List.sqlite")
 cur=conn.cursor()
 #conn.execute("create table TempTest(temp, location)")
@@ -47,7 +48,18 @@ def wordset(wordset):
     if wordset==T:
         wordset=T
     
+def Sql_Return(Sql_Temp):
     
+    print(Sql_Temp)#温度の値渡し成功
+    today = datetime.datetime.today()
+    #sql = "INSERT INTO %s (Device_ID, TimeStamp, Temperature) values(%s,'%s',%s)" % (tableid,today,"""IOT.temp_mes""")
+    sql = "INSERT INTO %s (Device_ID, TimeStamp, Temperature) values(%s,'%s',%s)" % (tableid,"001",today,Sql_Temp)
+    print("Sql")
+    print(sql)#sql文を作る
+    importlib.reload(Insert)
+    Insert.insert_request(self)
+    return sql
+  
 def R_Read(read_flag):
     reading=0
     if read_flag=='test':
@@ -76,23 +88,48 @@ def R_Read(read_flag):
         temp=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,11)
         temp_list=[]
         print(temp)
-        for i in range(11):
+        for i in range(5,11):
             temp_list.insert(i,chr(temp[i]))
         temp_mes=''.join(temp_list)
         print(temp_mes)
-        now=str(datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
+        temp_num=float(temp_mes)
+        Sql_Temp=temp_num
+        #print(temp_num)
+        print("huga")
+        print(Sql_Temp)
+        Sql_Return(Sql_Temp)
+        importlib.reload(Insert)
+        Insert.Insertfunction(self)
+        print("hoge")
+        #importlib.reload(Insert)
+        #Insert.Insertfunction()
+        #print("TEMPdone")
+        #return Sql_Temp
+        #return temp_num
+        
+        #return temp_num
+        #return temp_num
+        #return temp_num
+        #now=str(datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
         #conn.execute("insert into TempTest values('"+str(temp_mes)+"','"+now+"')")
         #cur.execute("select*from temptest")
         #for row in cur:
         #    print(str(row[0])+","+str(row[1]))
         #cur.close()
-        run = Insert.FusionTablesAPIRunner()
+        
+        
+        #importlib.reload(Insert)
+        
+        """run = Insert.FusionTablesAPIRunner()
+        
         run.initialize()
-        run.insert()
-        print("done")
+        run.insert()"""
+        #Insert.Insertfunction()#外部のInsertを呼び出す。
+        
     if read_flag=='else':
         else_reading=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS)
         print(else_reading)
+    return read_flag
 
 
 
@@ -139,6 +176,7 @@ def Send_CallBack(send_flag):
         R_Read()
     elif send_flag == 'E_True':
         send_flag ='s_True'
+
 
 def Task_Command():
     
