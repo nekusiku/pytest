@@ -52,19 +52,12 @@ class Command:
     def __init__(self):
         importlib.reload(Insert)
         self.requester=Insert.FusionTablesAPIRunner()
+        self.requester.initialize()
     
     
     def Sql_Return(self,sql):
         print(sql)#温度の値渡し成功
-        #today = datetime.datetime.today()
-        #print(today)
-        #sql = "INSERT INTO %s (Device_ID, TimeStamp, Temperature) values(%s,'%s',%s)" % (tableid,today,"""IOT.temp_mes""")
-        #sql = "INSERT INTO %s (Device_ID, TimeStamp, Temperature) values(%s,'%s',%s)" % (tableid,"001",today,Sql_Temp)
         print("Sql_Return")
-        #print(sql)#sql文を作る
-        #importlib.reload(Insert)
-        #Insert.FusionTablesAPIRunner().insert_request()
-        #return sql
         return sql
     
     def R_Read(self,read_flag):
@@ -108,13 +101,15 @@ class Command:
                 today = datetime.datetime.today()
                 #SQL文をそのまま渡す
                 sql="INSERT INTO %s (Device_ID, TimeStamp, Temperature) values(%s,'%s',%s)" % (tableid,"001",today,temp_num)
-                
+                print(sql)
+                print(type(sql))
                 #Command().Sql_Return(sql)#SQL文をリターンするための値渡しができてるやん！
                 
                 print("Insert_Sql_Temp")
                 #importlib.reload(Insert)
                 
-                self.requester.query(sql,is_write_response=True)#インサート実行
+                #self.requester.query(sql,is_write_response=True)#インサート実行
+                self.requester.query(sql)#インサート実行
                 
                 print("hoge")
             else :
@@ -168,8 +163,8 @@ class Command:
                 read_flag='ad'
                 time.sleep(1.0)
                 Command().R_Read(read_flag)
-             #とりあえず石川さんのコマンドをそのまま
-             #リクエス
+            
+             
         elif command == 'r':
                 bus.write_i2c_block_data(SLAVE_ADDRESS,0x17,[0x12,0x19])
                 read_flag='r'
@@ -203,7 +198,8 @@ class Command:
         elif command =='wait_send':
                 Wait(send_flag)
        
-while __name__=="__main__":
 #while __name__=="__main__":
+#while __name__=="__main__":
+while True:
     Command().Task_Command()
 

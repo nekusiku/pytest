@@ -47,7 +47,7 @@ class FusionTablesAPIRunner:
     def insert_request(self):
         today = datetime.datetime.today()
         sql = "INSERT INTO %s (Device_ID, TimeStamp, Temperature) values(%s,'%s',%s)" % (tableid,"001",today,114)
-        
+        print(type(sql))
         #print(sql)
         #sql = "INSERT INTO %s (TimeStamp, CpuTemperature) values('%s',%s)" % (tableid, '2016-12-01 01:02:03',44444)
         headers={'Content-Type':'application/json'}
@@ -55,7 +55,10 @@ class FusionTablesAPIRunner:
             "sql": sql
         }
         url = 'https://www.googleapis.com/fusiontables/v2/query?' + 'key=' + urllib.parse.quote_plus(api_key) + '&' + 'access_token=' + urllib.parse.quote_plus(self.access_token) + '&' + 'sql=' + urllib.parse.quote_plus(sql)
+        print(type(headers))
+        print(type(data))
         print(url)
+        print(type(sql))
         #return urllib.request.urlopen(url, data=data, headers=headers)
         #return urllib.request.Request(url,data=data,headers=headers)
         return requests.post(url,data=data,headers=headers)
