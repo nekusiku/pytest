@@ -27,7 +27,7 @@ class Command:
         self.requester=Insert.FusionTablesAPIRunner()
         self.requester.initialize()
     
-    #マイコンから送られたデータをコマンド別に処理するメソッド
+    #マイコンから送られたデータを受け取って、コマンド別に処理するメソッド
     def R_Read(self,read_flag):
         reading=0
         #TEST通信
@@ -43,21 +43,24 @@ class Command:
         if read_flag=='ad':
             #受信した文字列
             msr=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,7)
-            print(msr)
             msr_list=[]
+            #文字列を連結する
             for i in range(7):
                 msr_list.insert(i,chr(msr[i]))
+            #文字列が届いた場合
             if msr[0] is not 255:
                 msr_mes=''.join(msr_list)
                 print(msr_mes)
             #MEASUREが届かなかった場合
             else:
                 print("数秒待って入力してください")
+                time.sleep(3)
             
         #温度データ読み込み    
         if read_flag=='r':
             temp=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,11)
             temp_list=[]
+            #文字列の中の温度部分を取り出して連結
             for i in range(5,11):
                 temp_list.insert(i,chr(temp[i]))
                 temp_mes=''.join(temp_list)
@@ -65,7 +68,8 @@ class Command:
             if temp[10] is not 0 and temp[0] is not 255:
                 #文字列の温度データを温度の部分だけ数字に
                 temp_num=float(temp_mes)
-                Sql_Temp=temp_num
+                
+                #日付の取得
                 today = datetime.datetime.today()
                 #SQL文を作成する
                 
@@ -75,6 +79,7 @@ class Command:
             else :
                 #うまく温度データを取り込めなかった場合
                 print("数秒待って入力してください")
+                time.sleep(3)
                 pass
             
         if read_flag=='else':
@@ -87,7 +92,7 @@ class Command:
         if command == 'measure':#AD変換
                 #コマンド[MEASURE]を送信する
                 bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x18,0x16])
-                time.sleep(0.8)
+                time.sleep(0.5)
                 read_flag='ad'
                 
                 Command().R_Read(read_flag)
@@ -95,7 +100,9 @@ class Command:
              
         elif command == 'r':#温度データ呼び出し(READ_TEMP)
                 #コマンド[READ_TEMP]を送信する
+                time.sleep(0.)
                 bus.write_i2c_block_data(SLAVE_ADDRESS,0x17,[0x12,0x19])
+                time.sleep(0.4)
                 read_flag='r'
                 Command().R_Read(read_flag)
                 
@@ -104,7 +111,8 @@ class Command:
                 bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x14,0x15])  
                 read_flag='test'
                 Command().R_Read(read_flag)
-              
+#メインループ              
 while __name__=="__main__":
+    
     Command().Task_Command()
 
