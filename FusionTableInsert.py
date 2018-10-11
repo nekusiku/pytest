@@ -19,7 +19,6 @@ import GetAccessTokenFromRefreshToken as GetAccess
 #マイコンと通信するモジュール
 import IOT_Thermo_Sensor_Class as IOT
 
-
 #クラス宣言
 class FusionTablesAPIRunner:
     #FusionTableの認証の初期化
@@ -49,7 +48,10 @@ class FusionTablesAPIRunner:
     #データベース登録の実行文を呼び出し
     def query(self,sql,is_write_response=False):
         r = self._query_request(sql)
-        print(r)
+        print(r.text)
+        #print(r.read().decode('utf-8'))
+        
+        #print(HTTPStatus)
         #通信がうまく行かなくなった場合の処理
         if not(r.status_code == 200):
             #エラーメッセージの表示
@@ -86,16 +88,12 @@ class FusionTablesAPIRunner:
             )
             
         #POST通信(Url,ヘッダー,データ)returnでレスポンスが表示される
-        #return requests.post(url,headers=headers,data=sql_data)
-        req = urllib.request.Request(url,sql_enc_data,headers)
-        response = urllib.request.urlopen(req)
-        html=response.read()#レスポンスボディ
-        return html.decode('utf-8')
+        return requests.post(url,headers=headers,data=sql_data)
     
     #古いアクセストークンの場合の処理
-    def is_old_asscess_token(self, response):
+    def is_old_asscess_token(self,response):
         #レスポンスが401(認証が拒否された)のとき
-        if (response.status_code == 401):
+        if (response == 401):
             j = json.loads(response.text)
             errors = j["error"]["errors"][0]
             if (errors["reason"] == "authError" and
@@ -104,7 +102,8 @@ class FusionTablesAPIRunner:
                 return True
             else:
                 return False
+            
 if __name__ == "__main__":
     run = FusionTablesAPIRunner()
     run.initialize()
-    run.query()
+    run.query(sql)

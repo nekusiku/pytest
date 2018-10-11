@@ -42,6 +42,7 @@ class Command:
         #MEASURE通信   
         if read_flag=='ad':
             #受信した文字列
+            time.sleep(0.5)
             msr=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,7)
             msr_list=[]
             #文字列を連結する
@@ -55,9 +56,11 @@ class Command:
             else:
                 print("数秒待って入力してください")
                 time.sleep(3)
+                Command().Task_Command()
             
         #温度データ読み込み    
         if read_flag=='r':
+            time.sleep(0.5)
             temp=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,11)
             temp_list=[]
             #文字列の中の温度部分を取り出して連結
@@ -80,6 +83,7 @@ class Command:
                 #うまく温度データを取り込めなかった場合
                 print("数秒待って入力してください")
                 time.sleep(3)
+                Command().Task_Command()
                 pass
             
         if read_flag=='else':
@@ -92,17 +96,14 @@ class Command:
         if command == 'measure':#AD変換
                 #コマンド[MEASURE]を送信する
                 bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x18,0x16])
-                time.sleep(0.5)
                 read_flag='ad'
-                
                 Command().R_Read(read_flag)
             
              
         elif command == 'r':#温度データ呼び出し(READ_TEMP)
                 #コマンド[READ_TEMP]を送信する
-                time.sleep(0.)
+                
                 bus.write_i2c_block_data(SLAVE_ADDRESS,0x17,[0x12,0x19])
-                time.sleep(0.4)
                 read_flag='r'
                 Command().R_Read(read_flag)
                 
