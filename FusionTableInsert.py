@@ -5,7 +5,6 @@
 #Python標準ライブラリのモジュールをimport
 import os.path
 import requests
-#from urllib import request
 import urllib.request
 import urllib.parse
 import importlib
@@ -49,9 +48,7 @@ class FusionTablesAPIRunner:
     def query(self,sql,is_write_response=False):
         r = self._query_request(sql)
         print(r.text)
-        #print(r.read().decode('utf-8'))
-        
-        #print(HTTPStatus)
+    
         #通信がうまく行かなくなった場合の処理
         if not(r.status_code == 200):
             #エラーメッセージの表示
@@ -77,9 +74,10 @@ class FusionTablesAPIRunner:
         sql_data = {
             "sql": sql
         }
+        #sql文をエンコード
         sql_enc_data=urllib.parse.urlencode(sql_data).encode('utf-8')
-        #urlの設定
         
+        #urlの設定
         url=(
             'https://www.googleapis.com/fusiontables/v2/query?'+
             'key=' + urllib.parse.quote(self.api_key)+'&'+

@@ -52,11 +52,17 @@ class Command:
             if msr[0] is not 255:
                 msr_mes=''.join(msr_list)
                 print(msr_mes)
+                bus.write_i2c_block_data(SLAVE_ADDRESS,0x17,[0x12,0x19])
+                read_flag='r'
+                Command().R_Read(read_flag)
             #MEASUREが届かなかった場合
             else:
                 print("数秒待って入力してください")
-                time.sleep(3)
-                Command().Task_Command()
+                time.sleep(10)
+                bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x18,0x16])
+                read_flag='ad'
+                Command().R_Read(read_flag)
+                #Command().Task_Command()
             
         #温度データ読み込み    
         if read_flag=='r':
@@ -79,20 +85,24 @@ class Command:
                 sql="INSERT INTO %s (Device_ID, TimeStamp, Temperature) values(%s,'%s',%s)" % (tableid,"001",today,temp_num)
                 #SQL文をデータベース登録のモジュールに渡す。
                 self.requester.query(sql,is_write_response=True)
+                time.sleep(30)
             else :
                 #うまく温度データを取り込めなかった場合
                 print("数秒待って入力してください")
                 time.sleep(3)
-                Command().Task_Command()
+                #Command().Task_Command()
+                bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x18,0x16])
+                read_flag='ad'
+                Command().R_Read(read_flag)
                 pass
             
         if read_flag=='else':
             pass
         
     #コマンドを入力して送信するメソッド
-    def Task_Command(self):
-        command = 0    
-        command = input("[温度計測：MEASURE][温度データ取得:r][テスト通信:TEST] 入力コマンド:")#コマンド入力
+    def Task_Command(self,command):
+        #command = 0    
+        #command = input("[温度計測：MEASURE][温度データ取得:r][テスト通信:TEST] 入力コマンド:")#コマンド入力
         if command == 'measure':#AD変換
                 #コマンド[MEASURE]を送信する
                 bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x18,0x16])
@@ -114,6 +124,6 @@ class Command:
                 Command().R_Read(read_flag)
 #メインループ              
 while __name__=="__main__":
-    
-    Command().Task_Command()
+    command='measure'
+    Command().Task_Command(command)
 
