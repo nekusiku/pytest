@@ -67,7 +67,7 @@ class FusionTablesAPIRunner:
     #データベース登録の実行文
     def _query_request(self,sql):
         #日付処理
-        today = datetime.datetime.today()
+        #today = datetime.datetime.today()
         #ヘッダーの設定
         headers={'Content-Type':'application/json'}
         #データにsql文を設定
@@ -84,7 +84,7 @@ class FusionTablesAPIRunner:
             'access_token=' + urllib.parse.quote(self.access_token)+'&'+
             'sql=' + urllib.parse.quote(sql)
             )
-            
+        print(url)    
         #POST通信(Url,ヘッダー,データ)returnでレスポンスが表示される
         return requests.post(url,headers=headers,data=sql_data)
     
