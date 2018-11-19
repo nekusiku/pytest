@@ -46,7 +46,7 @@ class Command:
         #MEASURE通信   
         if read_flag=='ad':
             #受信した文字列
-            time.sleep(0.1)
+            #time.sleep(1)
             msr=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,7)
             msr_list=[]
             print(msr)
@@ -66,9 +66,9 @@ class Command:
             #MEASUREが届かなかった場合
             else:
                 #sys.exit()
-                print("数秒待って入力してくださいM")
+                print("計測結果を受信できませんでした")
                 #time.sleep(1)
-                #bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x18,0x16])
+                bus.write_i2c_block_data(SLAVE_ADDRESS,0x00,[0x00,0x00,0x00,0x00,0x00,0x00])
                 #read_flag='ad'
                 #Command().R_Read(read_flag)
                 #Command().Task_Command()
@@ -76,7 +76,7 @@ class Command:
         #温度データ読み込み    
         if read_flag=='r':
         
-            time.sleep(0.3)
+            #time.sleep(0.05)
             temp=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,11)
             print(temp)
             temp_list=[]
@@ -85,7 +85,7 @@ class Command:
                 temp_list.insert(i,chr(temp[i]))
                 temp_mes=''.join(temp_list)
             print(temp_mes)
-            if temp[10] is not 0 and temp[0] is not 255:
+            if temp[10] is not 0 and temp[0] is not 255 and temp[10] is not 255:
                 #文字列の温度データを温度の部分だけ数字に
                 temp_num=float(temp_mes)
                 
@@ -99,14 +99,14 @@ class Command:
                 
                 #SQL文をデータベース登録のモジュールに渡す。
                 self.requester.query(sql,is_write_response=True)
-                time.sleep(60)
+                time.sleep(50)
             else :
                 #sys.exit()
                 #うまく温度データを取り込めなかった場合
                 #break
-                print("数秒待って入力してください")
-                time.sleep(1)
-                
+                print("温度データを取り込めませんでした。")
+                #time.sleep(1)
+                #bus.write_i2c_block_data(SLAVE_ADDRESS,0,[0,0,0,0,0,0,0,0,0,0])
                 #bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x18,0x16])
                 #read_flag='ad'
                 #Command().R_Read(read_flag)
@@ -124,7 +124,7 @@ class Command:
         if command == 'measure':#AD変換
                 #コマンド[MEASURE]を送信する
                 print("measure")
-                time.sleep(0.1)
+                #time.sleep(0.1)
                 bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x18,0x16])
                 read_flag='ad'
                 #time.sleep(0.025)
@@ -147,8 +147,9 @@ class Command:
 #メインループ              
 while __name__=="__main__":
     print("hoge")
+    time.sleep(10)
     command='measure'
     Command().Task_Command(command)
     print("huga")
-    time.sleep(1.2)
+    
 
