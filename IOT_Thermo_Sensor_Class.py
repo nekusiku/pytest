@@ -75,16 +75,36 @@ class Command:
             
         #温度データ読み込み    
         if read_flag=='r':
+            list_last=11
         
             #time.sleep(0.05)
             temp=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,11)
             print(temp)
             temp_list=[]
             #文字列の中の温度部分を取り出して連結
-            for i in range(5,11):
+            if temp[10] is 0 and temp[6] is not 48 and temp[9] is not 255:
+                list_last=10
+            for i in range(5,list_last):
                 temp_list.insert(i,chr(temp[i]))
                 temp_mes=''.join(temp_list)
             print(temp_mes)
+            if temp[10] is 0 and temp[6] is not 48 and temp[9] is not 255:
+                temp_mes=temp_mes.rstrip()
+                print(temp_mes)
+                #文字列の温度データを温度の部分だけ数字に
+                temp_num=float(temp_mes)
+                
+                #日付の取得
+                today = datetime.datetime.today()
+                print(today)
+                print(type(today))
+                #SQL文を作成する
+                
+                sql = "INSERT INTO %s (Device_ID, TimeStamp, Temperature) values(%s,'%s',%s)" % (tableid,"001",today,temp_num)
+                
+                #SQL文をデータベース登録のモジュールに渡す。
+                self.requester.query(sql,is_write_response=True)
+                time.sleep(50)
             if temp[10] is not 0 and temp[0] is not 255 and temp[10] is not 255:
                 #文字列の温度データを温度の部分だけ数字に
                 temp_num=float(temp_mes)
@@ -95,11 +115,13 @@ class Command:
                 print(type(today))
                 #SQL文を作成する
                 
-                sql = "INSERT INTO %s (Device_ID, TimeStamp, Temperature) values(%s,'%s',%s)" % (tableid,"002",today,temp_num)
+                sql = "INSERT INTO %s (Device_ID, TimeStamp, Temperature) values(%s,'%s',%s)" % (tableid,"001",today,temp_num)
                 
                 #SQL文をデータベース登録のモジュールに渡す。
                 self.requester.query(sql,is_write_response=True)
                 time.sleep(50)
+                    
+                    
             else :
                 #sys.exit()
                 #うまく温度データを取り込めなかった場合
@@ -124,10 +146,10 @@ class Command:
         if command == 'measure':#AD変換
                 #コマンド[MEASURE]を送信する
                 print("measure")
-                #time.sleep(0.1)
+                
                 bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x18,0x16])
                 read_flag='ad'
-                #time.sleep(0.025)
+                
                 Command().R_Read(read_flag)
             
              
