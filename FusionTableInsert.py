@@ -17,7 +17,9 @@ import datetime
 import GetAccessTokenFromRefreshToken as GetAccess
 #マイコンと通信するモジュール
 import IOT_Thermo_Sensor_Class as IOT
-
+import GoogleKeysGetter
+#認証キーの外部ファイル
+import IOT_Thermo_Sensor_Key as Key
 #クラス宣言
 class FusionTablesAPIRunner:
     #FusionTableの認証の初期化
@@ -32,17 +34,37 @@ class FusionTablesAPIRunner:
     #認証の初期設定
     def initialize(self):
         #OAuth2.0認証
-        self.client_id='1033655159638-fek1o17voj7hfut8hggaffceh1bab4po.apps.googleusercontent.com'
-        self.client_secret='TtvNOi4daznlLTjQJho66LwO'
+        
+        self.client_id=Key.client_id
+        #クライアントID
+        self.client_secret=Key.client_secret
         #APIキー
-        self.api_key='AIzaSyDJntsUxTlr6nOUTDqOuynw8OyJGw9Tai0'
+        
+        self.api_key=Key.api_key
         #データベースのID
-        self.tableid='1MNHaJ5Y9GbvSjAzXgI7_ww2sszbYIc88O2MYdewH'
+        
+        self.tableid=Key.tableid
         #APIを使うためのトークン
-        self.refresh_token='1/FUAfwIr9_ZvjTCiqHX6-BApngOVuaVWylClw80U8Tlc'
+        
+        self.refresh_token=Key.refresh_token
         self.token_requester=GetAccess.AccessTokenRequester()
+        #リフレッシュトークンからアクセストークンを取得する
         self.access_token=self.token_requester.get_access_token(self.client_id,self.client_secret,self.refresh_token)
-  
+        if(self.client_id is None):
+            print("外部ファイルを読み込めませんでした")
+            
+            return "ERROR"
+        if(self.client_secret is None):
+            print("外部ファイルを読み込めませんでした")
+            return "ERROR"
+        if(self.api_key is None):
+            print("外部ファイルを読み込めませんでした")
+            return "ERROR"
+        if(self.tableid is None):
+            print("外部ファイルを読み込めませんでした")
+            return "ERROR"
+
+            
 
     #データベース登録の実行文を呼び出し
     def query(self,sql,is_write_response=False):
@@ -58,7 +80,8 @@ class FusionTablesAPIRunner:
                 self.access_token=self.token_requester.get_access_token(self.client_id,self.client_secret,self.refresh_token)
                 r = self._query_request(sql)
                 print(r.text)
-                
+                return "ERROR"
+            #エラーメッセージの場合ERRORを返す。
         if(is_write_response):
             filePath = "Google.FusionTables.query.sql.insert.json"
             file = open(filePath, 'w', encoding='utf-8')
