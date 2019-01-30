@@ -112,7 +112,7 @@ class FusionTablesAPIRunner:
         return requests.post(url,headers=headers,data=sql_data)
     
     #古いアクセストークンの場合の処理
-    def is_old_asscess_token(self,response):
+    def is_old_access_token(self,response):
         #レスポンスが401(認証が拒否された)のとき
         if (response == 401):
             j = json.loads(response.text)

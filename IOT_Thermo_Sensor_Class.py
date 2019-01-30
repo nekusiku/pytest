@@ -11,6 +11,7 @@ import importlib
 import datetime
 import IOT_Thermo_Sensor_Key as Key
 
+devID=["001","002","003","004","005","006","007","008","009","010"]
 count=0
 #FusionTablesのID
 tableid = Key.tableid
@@ -37,6 +38,7 @@ class Command:
         #TEST通信
         if read_flag=='test':
         #4バイト分のデータを受信
+            time.sleep(1)
             test=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,4)
             test_list=[]
             for i in range(4):
@@ -107,7 +109,13 @@ class Command:
                 ERROR='ERROR'
                 return (ERROR)
                 
-            
+        else:
+            #うまく温度データを取り込めなかった場合
+            print("温度データを取り込めませんでした。")
+            #read_flag='ad'
+            #Command().R_Read(read_flag)
+            ERROR='ERROR'
+            return (ERROR)
         if read_flag=='else':
             pass
         
@@ -115,7 +123,7 @@ class Command:
     def Task_Command(self,command):
         if command == 'measure':#AD変換
                 #コマンド[MEASURE]を送信する
-                
+                time.sleep(0.1)
                 bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x18,0x16])
                 #フラグセット
                 read_flag='ad'
@@ -134,6 +142,7 @@ class Command:
                     Command().Task_Command(command)
         elif command == 'r':#温度データ呼び出し(READ_TEMP)
                 #コマンド[READ_TEMP]を送信する
+                time.sleep(0.1)
                 bus.write_i2c_block_data(SLAVE_ADDRESS,0x17,[0x12,0x19])
                 #フラグセット
                 read_flag='r'
@@ -151,8 +160,8 @@ class Command:
                 #日付の取得
                     print(today)
                     #SQL文を作成する
-                    
-                    sql = "INSERT INTO %s (Device_ID, TimeStamp, Temperature) values(%s,'%s',%s)" % (tableid,"001",today,read)
+                    print(devID[0])
+                    sql = "INSERT INTO %s (Device_ID, TimeStamp, Temperature) values(%s,'%s',%s)" % (tableid,devID[0],today,read)
                     
                     #SQL文をデータベース登録のモジュールに渡す。
                     request=self.requester.query(sql,is_write_response=True)
@@ -167,6 +176,7 @@ class Command:
                     
         elif command == 'test':#TEST通信
                 #コマンド[TEST]を送信する
+                time.sleep(0.1)
                 bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x14,0x15])  
                 #フラグセット
                 read_flag='test'
@@ -185,10 +195,25 @@ class Command:
                     #time.sleep(0.1)
                     command='test'
                     Command().Task_Command(command)
+    def main(self,count):
+        if count==0:
+            print("初期化します")
+            #初期化
+            init=Insert.FusionTablesAPIRunner().initialize()
+        if init=="ERROR":
+            print("初期化に失敗しました")
+            sys.exit()
+        else :
+            count=1
+        time.sleep(10)
+        command='test'
+        Command().Task_Command(command)
+        
                     
 #メインループ              
 while __name__=="__main__":
-    if count==0:
+    Command().main(count)
+    """if count==0:
         print("初期化します")
         #初期化
         init=Insert.FusionTablesAPIRunner().initialize()
@@ -197,7 +222,7 @@ while __name__=="__main__":
             sys.exit()
         else :
             
-            count=1
+            count=1"""
     time.sleep(10)
     command='test'
     Command().Task_Command(command)
