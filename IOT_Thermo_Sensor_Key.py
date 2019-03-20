@@ -1,3 +1,10 @@
+"""
+FileName   :IOT_Thermo_Sensor_Key.py
+Description:
+Written    :
+Update     :
+"""
+# -*-coding:utf-8-*-
 #IOT温度センサの設定キー
 #クライアントID
 client_id='1033655159638-fek1o17voj7hfut8hggaffceh1bab4po.apps.googleusercontent.com'

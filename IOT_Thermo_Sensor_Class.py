@@ -1,6 +1,15 @@
-#!/usr/bin/env python
+# !/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+FileName   :IOT_Thermo_Sensor_Class.py
+Description:IOT温度センサを動かす。
+Written    :
+Update     :
+"""
 
-#-*- coding: utf-8 -*-
+"""
+モジュールをインポートする。
+"""
 import serial
 import smbus
 import time
@@ -12,25 +21,48 @@ import datetime
 import IOT_Thermo_Sensor_Key as Key
 
 devID=["001","002","003","004","005","006","007","008","009","010"]
-count=0
-#FusionTablesのID
+
+#FusionTablesID
 tableid = Key.tableid
 ERROR='ERROR'
-
+count=0
 bus = smbus.SMBus(1)#i2Cの設定
 MICON_ADDRESS = 0x2c#マイコンのi2Cアドレス、ここでのアドレスはマイコンだと左に１ビットずれた状態になる。
 SLAVE_ADDRESS = MICON_ADDRESS>>1#ややこしくなるので、こっちでも同じ数字で設定して、シフトでずらし問題がないようにする。
 REGISTER_ADDRESS=0x13#マイコンのレジスタアドレス、仮で設定する。
 
-read_flag=False 
+read_flag=False
+"""
+Class Name :Command
+Description:Send Comand
+Argument   :
+Return     :
+Written    :
+Update     :
+"""
 
 class Command:
     #初期化
+    """
+    FunctionName:init
+    Description :initialization
+    Argument    :self
+    Return      :
+    Written     :
+    Update      :
+    """
     def __init__(self):
         importlib.reload(Insert)
         self.requester=Insert.FusionTablesAPIRunner()
         self.requester.initialize()
-    
+    """
+    FunctionName:init
+    Description :Reading data from micro,and Execution by Command
+    Argument    :self,read_flag
+    Return      :test_mes,mes_mes,temp_num,ERROR
+    Written     :
+    Update      :
+    """
     #マイコンから送られたデータを受け取って、コマンド(フラグ)別に処理するメソッド
     def R_Read(self,read_flag):
         
@@ -38,7 +70,7 @@ class Command:
         #TEST通信
         if read_flag=='test':
         #4バイト分のデータを受信
-            time.sleep(1)
+            
             test=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,4)
             test_list=[]
             for i in range(4):
@@ -77,6 +109,7 @@ class Command:
         #温度データ読み込みコマンド TEMP   
         if read_flag=='r':
             list_last=11
+            time.sleep(1)
             temp=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,11)
             print(temp)
             temp_list=[]
@@ -118,7 +151,15 @@ class Command:
             return (ERROR)
         if read_flag=='else':
             pass
-        
+
+    """
+    FunctionName:Task_Command
+    Description :Sending Command
+    Argument    :self,command
+    Return      :None
+    Written     :
+    Update      :
+    """
     #コマンドを入力して送信するメソッド
     def Task_Command(self,command):
         if command == 'measure':#AD変換
@@ -142,7 +183,7 @@ class Command:
                     Command().Task_Command(command)
         elif command == 'r':#温度データ呼び出し(READ_TEMP)
                 #コマンド[READ_TEMP]を送信する
-                time.sleep(0.1)
+                time.sleep(1)
                 bus.write_i2c_block_data(SLAVE_ADDRESS,0x17,[0x12,0x19])
                 #フラグセット
                 read_flag='r'
@@ -152,6 +193,7 @@ class Command:
                 #返り値がERRORの場合
                 if read =='ERROR':
                     #コマンドメジャーをセット
+                    time.sleep(3)
                     command='measure'
                     Command().Task_Command(command)
                 else:
@@ -160,9 +202,9 @@ class Command:
                 #日付の取得
                     print(today)
                     #SQL文を作成する
-                    print(devID[0])
-                    sql = "INSERT INTO %s (Device_ID, TimeStamp, Temperature) values(%s,'%s',%s)" % (tableid,devID[0],today,read)
                     
+                    sql = "INSERT INTO %s (Device_ID, TimeStamp, Temperature) values(%s,'%s',%s)" % (tableid,devID[2],today,read)
+                    print(sql)
                     #SQL文をデータベース登録のモジュールに渡す。
                     request=self.requester.query(sql,is_write_response=True)
                     if request=="ERROR":
@@ -176,7 +218,7 @@ class Command:
                     
         elif command == 'test':#TEST通信
                 #コマンド[TEST]を送信する
-                time.sleep(0.1)
+                time.sleep(1)
                 bus.write_i2c_block_data(SLAVE_ADDRESS,0x13,[0x14,0x15])  
                 #フラグセット
                 read_flag='test'
@@ -188,17 +230,29 @@ class Command:
                 #MEASUREコマンド実行
                     print(test)
                     command='measure'
+                    #command='r'
                     Command().Task_Command(command)
                 #文字列がERRORの場合    
                 elif test=='ERROR':
+                    print(test)
                 #もう一度TESTコマンド実行
                     #time.sleep(0.1)
                     command='test'
                     Command().Task_Command(command)
+    """
+    FunctionName:main
+    Description :Main Function
+    Argument    :self count
+    Return      :
+    Written     :
+    Update      :
+    """
     def main(self,count):
+        
         if count==0:
             print("初期化します")
             #初期化
+            
             init=Insert.FusionTablesAPIRunner().initialize()
         if init=="ERROR":
             print("初期化に失敗しました")
@@ -209,10 +263,10 @@ class Command:
         command='test'
         Command().Task_Command(command)
         
-                    
+                 
 #メインループ              
 while __name__=="__main__":
-    Command().main(count)
+    #Command().main(count)
     """if count==0:
         print("初期化します")
         #初期化
@@ -220,12 +274,13 @@ while __name__=="__main__":
         if init=="ERROR":
             print("初期化に失敗しました")
             sys.exit()
-        else :
-            
-            count=1"""
-    time.sleep(10)
+        else :"""
     command='test'
+    #command='measure'
     Command().Task_Command(command)
+    count=1
+    #time.sleep(10)
+    
     
 
 

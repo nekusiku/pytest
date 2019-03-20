@@ -1,6 +1,11 @@
-#!python3
-#!python2
-#encoding:utf-8
+# -*-coding:utf-8-*-
+# !python3
+"""
+FileName   :FusionTableInsert.py
+Description:データ登録機能
+Written    :
+Update     :
+"""
 
 #Python標準ライブラリのモジュールをimport
 import os.path
@@ -21,8 +26,24 @@ import GoogleKeysGetter
 #認証キーの外部ファイル
 import IOT_Thermo_Sensor_Key as Key
 #クラス宣言
+"""
+Class Name :FusionTablesAPIRunner
+Description:Insert Date to DataTable by Use FusionTable Api
+Argument   :
+Return     :
+Written    :
+Update     :
+"""
 class FusionTablesAPIRunner:
     #FusionTableの認証の初期化
+    """
+    Class Name :init
+    Description:initialization
+    Argument   :self
+    Return     :
+    Written    :
+    Update     :
+    """
     def __init__(self):
         self.token_requester=None
         self.api_key=None
@@ -32,6 +53,14 @@ class FusionTablesAPIRunner:
         self.access_key = None
         self.refresh_token=None
     #認証の初期設定
+    """
+    FunctionName:initializse
+    Description :Certification Oauth2.0
+    Argument    :self
+    Return      :ERROR
+    Written     :
+    Update      :
+    """
     def initialize(self):
         #OAuth2.0認証
         
@@ -65,7 +94,14 @@ class FusionTablesAPIRunner:
             return "ERROR"
 
             
-
+    """
+    FunctionName:query
+    Description :Call Function 
+    Argument    :self,sql,is_write_response
+    Return      :ERROR
+    Written     :
+    Update      :
+    """
     #データベース登録の実行文を呼び出し
     def query(self,sql,is_write_response=False):
         r = self._query_request(sql)
@@ -87,6 +123,14 @@ class FusionTablesAPIRunner:
             file = open(filePath, 'w', encoding='utf-8')
             file.write(r.text)
             file.close()
+    """
+    FunctionName:query_request
+    Description :Execution Statement whitch Insert Data to DateBase 
+    Argument    :self,sql
+    Return      :requestpost,True,False
+    Written     :
+    Update      :
+    """
     #データベース登録の実行文
     def _query_request(self,sql):
         #日付処理
@@ -110,7 +154,14 @@ class FusionTablesAPIRunner:
         print(url)    
         #POST通信(Url,ヘッダー,データ)returnでレスポンスが表示される
         return requests.post(url,headers=headers,data=sql_data)
-    
+    """
+    FunctionName:is_old_access_token
+    Description :processing Old AccessToken 
+    Argument    :self,response
+    Return      :True,False
+    Written     :
+    Update      :
+    """    
     #古いアクセストークンの場合の処理
     def is_old_access_token(self,response):
         #レスポンスが401(認証が拒否された)のとき
