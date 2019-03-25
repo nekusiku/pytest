@@ -70,7 +70,7 @@ class Command:
         #TEST通信
         if read_flag=='test':
         #4バイト分のデータを受信
-            
+            time.sleep(1)
             test=bus.read_i2c_block_data(SLAVE_ADDRESS,REGISTER_ADDRESS,4)
             test_list=[]
             for i in range(4):
@@ -230,7 +230,8 @@ class Command:
                 #MEASUREコマンド実行
                     print(test)
                     command='measure'
-                    #command='r'
+                    #command='r'measureより先にreadコマンドを送信する動作確認で必要になる.
+                
                     Command().Task_Command(command)
                 #文字列がERRORの場合    
                 elif test=='ERROR':
@@ -276,7 +277,7 @@ while __name__=="__main__":
             sys.exit()
         else :"""
     command='test'
-    #command='measure'
+    #command='measure'コマンドを送信する順番を変えて動作チェックをするときはこっちのmeasureコマンドを使う。
     Command().Task_Command(command)
     count=1
     #time.sleep(10)
